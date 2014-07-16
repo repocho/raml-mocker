@@ -1,8 +1,9 @@
 'use strict';
 var _ = require('lodash');
+var loremIpsum = require('lorem-ipsum');
 var Mockjs = require('mockjs');
 var MockRandom = Mockjs.Random;
-var FormatMocker = require('./format');
+var formatMocker = require('./format');
 
 var DataMocker = function (schema) {
     return Mockers._mocker(schema);
@@ -17,7 +18,7 @@ var Mockers = {
         }
 
         if (schema.format) {
-            var formatRet = FormatMocker(schema.format, schema);
+            var formatRet = formatMocker(schema.format, schema);
 
             if (formatRet !== undefined) {
                 return formatRet;
@@ -96,9 +97,10 @@ var Mockers = {
         var ret = null;
 
         var strLen = MockRandom.integer(schema.minLength || 1, schema.maxLength || ((schema.minLength || 0) < 50 ? 50 : schema.minLength));
-        var beginIndex = MockRandom.integer(0, TitleStringMockData.length - 1 - strLen);
-        console.log('strLen', strLen, 'beginIndex', beginIndex);
-        ret = TitleStringMockData.substring(beginIndex, beginIndex + strLen);
+        console.log('strLen', strLen);
+        ret = loremIpsum({
+            count: strLen
+        }).replace(/ /, '').substring(0, strLen);
 
         return ret;
     },
@@ -152,7 +154,7 @@ var Mockers = {
             var multipleMax = 5;
 
             if (schema.maximum !== undefined) {
-                if ((schema.maximum == schema.multipleOf && !schema.exclusiveMaximum) || (schema.maximum > schema.multipleOf)) {
+                if ((schema.maximum === schema.multipleOf && !schema.exclusiveMaximum) || (schema.maximum > schema.multipleOf)) {
                     multipleMax = Math.floor(schema.maximum / schema.multipleOf);
                 } else {
                     multipleMin = 0;
