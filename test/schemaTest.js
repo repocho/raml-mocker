@@ -1,6 +1,5 @@
-/* global */
-var DataMocker = require('./schema.js');
 'use strict';
+var dataMocker = require('../src/schema.js');
 var schema = {
     'type': 'object',
     'description': 'activity info',
@@ -26,4 +25,4 @@ var schema = {
     'required': ['state', 'deadline', 'remainDays', 'needDays', 'seasonNum']
 };
 
-console.log(DataMocker(schema));
+console.log(dataMocker(schema));
