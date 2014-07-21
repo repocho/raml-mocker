@@ -15,29 +15,27 @@ var Mockers = {
 
         if (schema.enum && schema.enum.length > 0) {
             return schema.enum[_.random(0, schema.enum.length - 1)];
-        }
-
-        if (schema.format) {
+        } else if (schema.format) {
             var formatRet = formatMocker(schema.format, schema);
 
             if (formatRet !== undefined) {
                 return formatRet;
             }
+        } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
+            // TODO
+            return undefined;
+        } else {
+            var type = schema.type.toLowerCase();
+            if (_.isArray(type)) {
+                type = type[0].toLowerCase();
+            }
+            if (typeof (this[type + 'Mocker']) !== 'undefined') {
+                var ret = this[type + 'Mocker'](schema);
+                return ret;
+            } else {
+                return undefined;
+            }
         }
-
-        // TODO
-        if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
-
-        }
-
-        var type = schema.type;
-
-        if (_.isArray(type)) {
-            type = type[0];
-        }
-
-        var ret = this[type + 'Mocker'] ? this[type + 'Mocker'](schema) : {};
-        return ret;
     },
 
     objectMocker: function (schema) {
@@ -97,10 +95,9 @@ var Mockers = {
         var ret = null;
 
         var strLen = MockRandom.integer(schema.minLength || 1, schema.maxLength || ((schema.minLength || 0) < 50 ? 50 : schema.minLength));
-        console.log('strLen', strLen);
         ret = loremIpsum({
             count: strLen
-        }).replace(/ /, '').substring(0, strLen);
+        }).substring(0, strLen).trim();
 
         return ret;
     },
