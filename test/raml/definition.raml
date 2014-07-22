@@ -1,0 +1,16 @@
+#%RAML 0.8
+title: TEST_Definition
+version: v1
+mediaType: application/json
+schemas:
+  - objectDef : !include schemas/objectDefinition.json
+/test:
+  /{id}:
+    /objectDef:
+      get:
+        description: |
+          This method gets the objectDef of a dossier
+        responses:
+          200:
+            body:
+              schema: objectDef

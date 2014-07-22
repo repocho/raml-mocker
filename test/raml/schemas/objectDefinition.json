@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "description": "A collection of objects",
+  "properties": {
+    "ArrayOfObjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Identifier": {
+            "type": "string"
+          },
+          "Text": {
+            "type": "string"
+          },
+          "Date": {
+            "type": "integer",
+            "format": "timestamp"
+          },
+          "Number": {
+            "type": "integer"
+          }
+        },
+        "required": ["Identifier", "Text", "Date", "Number"]
+      }
+    }
+  },
+  "required": ["ArrayOfObjects"]
+}
