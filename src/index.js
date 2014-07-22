@@ -1,34 +1,46 @@
-/* global app, express*/
 'use strict';
 var path = require('path'),
-    ramlHTMLPath = path.join(__dirname, '../../restDefinitions/html'),
-    ramlPath = path.join(__dirname, '../../restDefinitions/'),
     fs = require('fs'),
     async = require('async'),
     raml = require('raml-parser'),
-    schemaMocker = require('json-schema-mock');
-app.use('/raml', express.static(ramlHTMLPath));
+    _ = require('underscore'),
+    schemaMocker = require('./schema.js');
 
-fs.readdir(ramlPath, function (err, files) {
-    files = files.filter(function (file) {
-        return file.substr(-5) === '.raml';
-    });
-    async.each(files, function (file, callback) {
-        raml.loadFile(path.join(ramlPath, file)).then(function (data) {
-            getRamlMethods(data, '/rest');
-            callback();
-        }, function (error) {
-            callback('Error parsing: ' + error);
-        });
-    }, function (err) {
+function generate(options, callback) {
+    if (options && options.path) {
+        generateFromPath(options.path, callback);
+    }
+}
+
+function generateFromPath(filesPath, callback) {
+    fs.readdir(filesPath, function (err, files) {
         if (err) {
-            console.log(err);
+            throw err;
         }
+        files = files.filter(function (file) {
+            return file.substr(-5) === '.raml';
+        });
+        var methods = {};
+        async.each(files, function (file, cb) {
+            raml.loadFile(path.join(filesPath, file)).then(function (data) {
+                var m = getRamlMethods(data, '/');
+                methods = _.extend(methods, m);
+                cb();
+            }, function (error) {
+                cb('Error parsing: ' + error);
+            });
+        }, function (err) {
+            if (err) {
+                console.log(err);
+            } else {
+                callback(methods);
+            }
+        });
     });
-
-});
+}
 
 function getRamlMethods(definition, uri) {
+    var methods = {};
     if (definition.relativeUri) {
         var nodeURI = definition.relativeUri;
         if (definition.uriParameters) {
@@ -36,18 +48,24 @@ function getRamlMethods(definition, uri) {
                 nodeURI = nodeURI.replace('{' + name + '}', ':' + name);
             });
         }
-        uri = path.join(uri, nodeURI);
+        uri = (uri + '/' + nodeURI).replace(/\/{2,}/g, '/');
     }
     if (definition.methods) {
         _.each(definition.methods, function (method) {
             if (method.method && /get|post|put|delete/i.test(method.method) && method.responses && method.responses[200] && method.responses[200].body && method.responses[200].body['application/json'] && method.responses[200].body['application/json'].schema) {
                 try {
                     var schema = JSON.parse(method.responses[200].body['application/json'].schema);
-                    app[method.method](uri, function (req, res) {
+                    methods[uri] = {
+                        method: method.method,
+                        callback: function (req, res) {
+                            var response = schemaMocker(schema);
+                            res.send(response);
+                        }
+                    };
+                    /*app[method.method](uri, function (req, res) {
                         var response = schemaMocker(schema);
                         res.send(response);
-                    });
-                    console.log('Created request: ' + method.method + ' - ' + uri);
+                    });*/
                 } catch (exception) {
                     console.log(exception.stack);
                 }
@@ -56,7 +74,11 @@ function getRamlMethods(definition, uri) {
     }
     if (definition.resources) {
         _.each(definition.resources, function (def) {
-            getRamlMethods(def, uri);
+            methods = _.extend(methods, getRamlMethods(def, uri));
         });
     }
+    return methods;
 }
+module.exports = {
+    generate: generate
+};
