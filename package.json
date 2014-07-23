@@ -4,10 +4,12 @@
   "description": "Node module to create random responses to requests based on RAML rest definition.",
   "main": "src/index.js",
   "directories": {
-    "test": "test"
+    "test": "test",
+    "src": "src"
   },
   "scripts": {
-    "test": "test/test.js"
+    "testRaml": "test/ramlTest.js",
+    "testSchema": "test/schemaTest.js"
   },
   "repository": {
     "type": "git",
