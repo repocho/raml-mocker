@@ -1,32 +1,45 @@
 'use strict';
-var MockJS = require('mockjs');
+var _ = require('lodash');
+var Faker = require('Faker');
 
-var FormatMocker = function (format) {
-    var result;
-    switch (format) {
-    case 'email':
-        result = MockJS.Random.email();
-        break;
-    case 'hostname':
-        result = MockJS.Random.domain();
-        break;
-    case 'ipv4':
-        result = MockJS.Random.ip();
-        break;
-    case 'uri':
-        result = MockJS.Random.url();
-        break;
-    case 'date':
-        result = MockJS.Random.datetime();
-        break;
-    case 'timestamp':
-        result = Date.now() + MockJS.Random.integer(-864000000, +864000000);
-        break;
-    case 'url':
-        result = MockJS.Random.url();
-        break;
+var defaultFormats = {
+    'email': function (Faker) {
+        return Faker.Internet.email();
+    },
+    'hostname': function (Faker) {
+        return Faker.Internet.domainName();
+    },
+    'ipv4': function (Faker) {
+        return Faker.Internet.ip();
+    },
+    'uri': function (Faker) {
+        return Faker.random.avatar_uri();
+    },
+    'date': function (Faker) {
+        return Faker.Date.recent();
+    },
+    'timestamp': function (Faker) {
+        return new Date(Faker.Date.recent(20)).getTime();
+    },
+    'url': function (Faker) {
+        return Faker.Image.imageUrl();
     }
-    return result;
+};
+
+var FormatMocker = function (formats) {
+    if (_.isUndefined(formats)) {
+        formats = {};
+    }
+    formats = _.defaults(formats, defaultFormats);
+    return {
+        format: function (format, schema) {
+            var result;
+            if (typeof (formats[format]) === 'function') {
+                result = formats[format](Faker, schema);
+            }
+            return result;
+        }
+    };
 };
 
 module.exports = FormatMocker;
