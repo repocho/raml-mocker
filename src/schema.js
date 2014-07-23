@@ -24,7 +24,7 @@ var Mockers = {
         } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
             // TODO
             return undefined;
-        } else {
+        } else if (schema.type) {
             var type = schema.type.toLowerCase();
             if (_.isArray(type)) {
                 type = type[0].toLowerCase();
@@ -35,6 +35,8 @@ var Mockers = {
             } else {
                 return undefined;
             }
+        } else {
+            return undefined;
         }
     },
 
