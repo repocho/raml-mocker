@@ -11,6 +11,7 @@ var schema = {
         },
         'deadline': {
             'type': 'number',
+            'format': 'timestamp',
             'description': 'deadline of the activity'
         },
         'remainDays': {
@@ -18,11 +19,20 @@ var schema = {
             'description': 'days left.'
         },
         'test': {
-            'type': 'String',
+            'type': 'string',
             'description': 'a string'
+        },
+        'foo': {
+            'type': 'string',
+            'format': 'foo'
         }
     },
     'required': ['state', 'deadline', 'remainDays', 'needDays', 'seasonNum']
 };
 
-console.log(dataMocker(schema));
+var formats = {
+    foo: function foo(Faker, schema) {
+        return Faker.Name.firstName();
+    }
+};
+console.log(dataMocker(schema, formats));
