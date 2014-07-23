@@ -8,8 +8,7 @@
     "src": "src"
   },
   "scripts": {
-    "testRaml": "test/ramlTest.js",
-    "testSchema": "test/schemaTest.js"
+    "test": "node test/ramlTest.js"
   },
   "repository": {
     "type": "git",
