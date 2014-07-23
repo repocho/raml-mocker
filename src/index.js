@@ -62,10 +62,6 @@ function getRamlMethods(definition, uri) {
                             res.send(response);
                         }
                     };
-                    /*app[method.method](uri, function (req, res) {
-                        var response = schemaMocker(schema);
-                        res.send(response);
-                    });*/
                 } catch (exception) {
                     console.log(exception.stack);
                 }

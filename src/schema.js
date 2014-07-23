@@ -12,11 +12,11 @@ var DataMocker = function (schema) {
 var Mockers = {
 
     _mocker: function (schema) {
-
         if (schema.enum && schema.enum.length > 0) {
             return schema.enum[_.random(0, schema.enum.length - 1)];
         } else if (schema.format) {
-            var formatRet = formatMocker(schema.format, schema);
+            var format = schema.format.toLowerCase();
+            var formatRet = formatMocker(format, schema);
 
             if (formatRet !== undefined) {
                 return formatRet;
@@ -43,7 +43,6 @@ var Mockers = {
     objectMocker: function (schema) {
         var ret = {};
         var self = this;
-
         /**
          * maxProperties
          * minProperties
@@ -56,21 +55,18 @@ var Mockers = {
                 ret[key] = self._mocker(value);
             });
         }
-
         return ret;
     },
 
     arrayMocker: function (schema) {
         var ret = [];
         var self = this;
-
         /**
          * additionalItems and items
          * maxItems
          * minItems
          * uniqueItems
          */
-
         if (_.isArray(schema.items)) {
             _.each(schema.items, function (item) {
                 ret.push(self._mocker(item));
@@ -81,12 +77,10 @@ var Mockers = {
                 ret.push(self._mocker(schema.items));
             });
         }
-
         return ret;
     },
 
     stringMocker: function (schema) {
-
         /**
          * maxLength
          * minLength
@@ -95,12 +89,10 @@ var Mockers = {
          * @type {string}
          */
         var ret = null;
-
         var strLen = MockRandom.integer(schema.minLength || 1, schema.maxLength || ((schema.minLength || 0) < 50 ? 50 : schema.minLength));
         ret = loremIpsum({
             count: strLen
         }).substring(0, strLen).trim();
-
         return ret;
     },
 
@@ -110,14 +102,11 @@ var Mockers = {
      * @private
      */
     _toFloat: function (number, len) {
-
         var num = String(number);
         var dotIndex = num.indexOf('.');
-
         if (dotIndex > 0) {
             num = num.substring(0, dotIndex + len + 1);
         }
-
         return parseFloat(num);
     },
 
@@ -127,7 +116,6 @@ var Mockers = {
      * @private
      */
     _getMinFloat: function (num) {
-
         var ret = /\.(0*)\d*$/.exec(num);
         return ret ? ret[1].length + 1 : 1;
     },
@@ -139,15 +127,12 @@ var Mockers = {
      * @private
      */
     _numberMocker: function (schema, floating) {
-
         var ret = null;
-
         /**
          * multipleOf
          * maximum and exclusiveMaximum
          * minimum and exclusiveMinimum
          */
-
         if (schema.multipleOf) {
             var multipleMin = 1;
             var multipleMax = 5;
@@ -160,10 +145,8 @@ var Mockers = {
                     multipleMax = 0;
                 }
             }
-
             ret = schema.multipleOf * MockRandom.integer(multipleMin, multipleMax);
         } else {
-
             var minimum = schema.minimum || 0;
             var maximum = schema.maximum || 9999;
             var gap = maximum - minimum;
@@ -174,20 +157,15 @@ var Mockers = {
             var minFloat = this._getMinFloat(minimum);
             minFloat = minFloat < this._getMinFloat(maximum) ? this._getMinFloat(maximum) : minFloat;
             var maxFloat = minFloat + _.random(0, 2);
-
             var littleGap = this._toFloat(_.random(0, gap, floating), _.random(minFloat, maxFloat)) / 10;
-
             ret = this._toFloat(_.random(minimum, maximum, floating), _.random(minFloat, maxFloat));
-
             if (ret === schema.maximum && schema.exclusiveMaximum) {
                 ret -= littleGap;
             }
-
             if (ret === schema.minimum && schema.exclusiveMinimum) {
                 ret += littleGap;
             }
         }
-
         return ret;
     },
 
