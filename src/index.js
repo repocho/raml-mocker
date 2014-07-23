@@ -3,7 +3,7 @@ var path = require('path'),
     fs = require('fs'),
     async = require('async'),
     raml = require('raml-parser'),
-    _ = require('underscore'),
+    _ = require('lodash'),
     schemaMocker = require('./schema.js');
 
 function generate(options, callback) {
