@@ -3,28 +3,32 @@
   "type": "object",
   "description": "A collection of objects",
   "properties": {
-    "ArrayOfObjects": {
+    "arrayOfObjects": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "Identifier": {
+          "identifier": {
+            "type": "number",
+            "format": "id"
+          },
+          "text": {
             "type": "string"
           },
-          "Text": {
-            "type": "string"
-          },
-          "Date": {
+          "date": {
             "type": "integer",
             "format": "timestamp"
           },
-          "Number": {
-            "type": "integer"
+          "number": {
+            "type": "number"
+          },
+          "isTrue": {
+            "type": "boolean"
           }
         },
-        "required": ["Identifier", "Text", "Date", "Number"]
+        "required": ["id", "text", "date", "number"]
       }
     }
   },
-  "required": ["ArrayOfObjects"]
+  "required": ["arrayOfObjects"]
 }
