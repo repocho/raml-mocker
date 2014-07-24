@@ -7,12 +7,16 @@ var path = require('path'),
     schemaMocker = require('./schema.js');
 
 function generate(options, callback) {
+    var formats = {};
+    if (options.formats) {
+        formats = options.formats;
+    }
     if (options && options.path) {
-        generateFromPath(options.path, callback);
+        generateFromPath(options.path, formats, callback);
     }
 }
 
-function generateFromPath(filesPath, callback) {
+function generateFromPath(filesPath, formats, callback) {
     fs.readdir(filesPath, function (err, files) {
         if (err) {
             throw err;
@@ -39,7 +43,7 @@ function generateFromPath(filesPath, callback) {
     });
 }
 
-function getRamlMethods(definition, uri) {
+function getRamlMethods(definition, uri, formats) {
     var methods = {};
     if (definition.relativeUri) {
         var nodeURI = definition.relativeUri;
@@ -57,9 +61,8 @@ function getRamlMethods(definition, uri) {
                     var schema = JSON.parse(method.responses[200].body['application/json'].schema);
                     methods[uri] = {
                         method: method.method,
-                        callback: function (req, res) {
-                            var response = schemaMocker(schema);
-                            res.send(response);
+                        mock: function () {
+                            return schemaMocker(schema, formats);
                         }
                     };
                 } catch (exception) {
