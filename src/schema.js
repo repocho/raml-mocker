@@ -1,18 +1,16 @@
 'use strict';
 var _ = require('lodash');
-var loremIpsum = require('lorem-ipsum');
-var Mockjs = require('mockjs');
-var MockRandom = Mockjs.Random;
+var Faker = require('faker');
 var FormatMocker = require('./format');
 
 var DataMocker = function (schema, formats) {
     var formatMocker = new FormatMocker(formats);
-    var mocker = new Mocker();
+    var mocker = new SchemaMocker();
     mocker.formatMocker = formatMocker;
     return mocker._mocker(schema);
 };
 
-var Mocker = function () {
+var SchemaMocker = function () {
     return {
         _mocker: function (schema) {
             if (schema.enum && schema.enum.length > 0) {
@@ -20,9 +18,7 @@ var Mocker = function () {
             } else if (schema.format) {
                 var format = schema.format.toLowerCase();
                 var formatRet = this.formatMocker.format(format, schema);
-                if (formatRet !== undefined) {
-                    return formatRet;
-                }
+                return formatRet;
             } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
                 // TODO
                 return undefined;
@@ -91,10 +87,10 @@ var Mocker = function () {
              * @type {string}
              */
             var ret = null;
-            var strLen = MockRandom.integer(schema.minLength || 1, schema.maxLength || ((schema.minLength || 0) < 50 ? 50 : schema.minLength));
-            ret = loremIpsum({
-                count: strLen
-            }).substring(0, strLen).trim();
+            var minLength = schema.minLength || 1;
+            var maxLength = schema.maxLength || (minLength < 50 ? 50 : schema.minLength);
+            var strLen = _.random(minLength, maxLength);
+            ret = Faker.Lorem.words(strLen).join(" ").substring(0, strLen).trim();
             return ret;
         },
 
@@ -147,17 +143,20 @@ var Mocker = function () {
                         multipleMax = 0;
                     }
                 }
-                ret = schema.multipleOf * MockRandom.integer(multipleMin, multipleMax);
+                ret = schema.multipleOf * _.random(multipleMin, multipleMax, floating);
             } else {
-                var minimum = schema.minimum || 0;
-                var maximum = schema.maximum || 9999;
+                var minimum = schema.minimum || -99999999999;
+                var maximum = schema.maximum || 99999999999;
                 var gap = maximum - minimum;
                 /**
                  *  - min: 0.000006
                  *  - max: 0.000009
                  */
                 var minFloat = this._getMinFloat(minimum);
-                minFloat = minFloat < this._getMinFloat(maximum) ? this._getMinFloat(maximum) : minFloat;
+                minFloat = minFloat;
+                if (minFloat < this._getMinFloat(maximum)) {
+                    minFloat = this._getMinFloat(maximum);
+                }
                 var maxFloat = minFloat + _.random(0, 2);
                 var littleGap = this._toFloat(_.random(0, gap, floating), _.random(minFloat, maxFloat)) / 10;
                 ret = this._toFloat(_.random(minimum, maximum, floating), _.random(minFloat, maxFloat));
@@ -180,7 +179,7 @@ var Mocker = function () {
         },
 
         booleanMocker: function (schema) {
-            return MockRandom.boolean();
+            return Faker.random.number(100000) < 50000;
         },
 
         nullMocker: function (schema) {
