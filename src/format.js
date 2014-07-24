@@ -1,8 +1,15 @@
 'use strict';
 var _ = require('lodash');
-var Faker = require('Faker');
+var Faker = require('faker');
 
 var defaultFormats = {
+    'id': function (Faker, schema) {
+        if (schema.type && schema.type.toLowerCase() === 'string') {
+            return Faker.Lorem.words(5).join('');
+        } else {
+            return Faker.random.number(999999999);
+        }
+    },
     'email': function (Faker) {
         return Faker.Internet.email();
     },
