@@ -86,7 +86,7 @@ TODO
 ---
 There are a lot of things TODO, this plugin is only the first step in the RAML generation and the SCHEMA generation. If you wanna colaborate don't hesitate to request it or do a fork + pull requests.
 
-The idea and some of the schema.js code is based in [json-schema-mock].
+Some of the schema.js code is based in [json-schema-mock].
 
 [definition.raml]:https://github.com/RePoChO/raml-mocker/blob/master/test/raml/definition.raml
 [schemaTest]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemaTest.js
