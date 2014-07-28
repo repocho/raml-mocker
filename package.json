@@ -15,11 +15,16 @@
     "url": "https://github.com/RePoChO/raml-mocker.git"
   },
   "keywords": [
-    "raml",
+    "RAML",
     "json",
     "schema",
+    "json-schema",
+    "faker",
     "mock",
-    "mocker"
+    "mocker",
+    "fixture",
+    "random",
+    "api"
   ],
   "author": "David Vega Fontelos",
   "license": "MIT",
