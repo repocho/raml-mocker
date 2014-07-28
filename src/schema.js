@@ -1,4 +1,5 @@
 'use strict';
+var fs = require('fs');
 var _ = require('lodash');
 var Faker = require('faker');
 var FormatMocker = require('./format');
