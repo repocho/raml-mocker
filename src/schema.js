@@ -42,6 +42,7 @@ var SchemaMocker = function () {
             var ret = {};
             var self = this;
             /**
+             * TODO:
              * maxProperties
              * minProperties
              * required
@@ -60,6 +61,7 @@ var SchemaMocker = function () {
             var ret = [];
             var self = this;
             /**
+             * TODO:
              * additionalItems and items
              * maxItems
              * minItems
@@ -80,6 +82,7 @@ var SchemaMocker = function () {
 
         stringMocker: function (schema) {
             /**
+             * TODO:
              * maxLength
              * minLength
              * enum
@@ -100,7 +103,7 @@ var SchemaMocker = function () {
          * @private
          */
         _toFloat: function (number, len) {
-            var num = String(number);
+            var num = '' + number;
             var dotIndex = num.indexOf('.');
             if (dotIndex > 0) {
                 num = num.substring(0, dotIndex + len + 1);
@@ -127,8 +130,7 @@ var SchemaMocker = function () {
         _numberMocker: function (schema, floating) {
             var ret = null;
             /**
-             * multipleOf
-             * maximum and exclusiveMaximum
+             * TODO:
              * minimum and exclusiveMinimum
              */
             if (schema.multipleOf) {
