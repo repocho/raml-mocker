@@ -60,7 +60,7 @@ As you could see the random generation is based on [faker], so the function to g
 
 And the RESULT in your callback
 ---
-This generate request will return an array like this:
+This generated request will return an array like this:
 ```javascript
 [
     {
