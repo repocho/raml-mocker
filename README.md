@@ -56,6 +56,8 @@ var options = {
     }
 };
 ```
+** FORMAT NAMES SHOULD BE IN LOWERCASE **
+
 As you could see the random generation is based on [faker], so the function to generate a specific format receives the faker object and the schema. You can use Faker for implementing the logic (check the documentation).
 
 And the RESULT in your callback
