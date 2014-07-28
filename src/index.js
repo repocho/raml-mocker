@@ -62,7 +62,7 @@ function generateFromFiles(files, formats, callback) {
     var requestsToMock = [];
     async.each(files, function (file, cb) {
         raml.loadFile(file).then(function (data) {
-            var m = getRamlRequestsToMock(data, '/');
+            var m = getRamlRequestsToMock(data, '/', formats);
             requestsToMock = _.union(requestsToMock, m);
             cb();
         }, function (error) {
@@ -108,7 +108,7 @@ function getRamlRequestsToMock(definition, uri, formats) {
     }
     if (definition.resources) {
         _.each(definition.resources, function (def) {
-            requestsToMock = _.union(requestsToMock, getRamlRequestsToMock(def, uri));
+            requestsToMock = _.union(requestsToMock, getRamlRequestsToMock(def, uri, formats));
         });
     }
     return requestsToMock;
