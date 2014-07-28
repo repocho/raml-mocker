@@ -70,7 +70,7 @@ This generate request will return an array like this:
     }
 ]
 ```
-If you has express and underscore or lodash in your project. You can use a callback like this to create the mocked requests:
+If you has [express] and [underscore] or [lodash] in your project. You can use a callback like this to create the mocked requests:
 ```javascript
 var callback = function (requestsToMock){
     _.each(requestsToMock, function(reqToMock){
@@ -90,5 +90,8 @@ The idea and some of the schema.js code is based in [json-schema-mock].
 
 [definition.raml]:https://github.com/RePoChO/raml-mocker/blob/master/test/raml/definition.raml
 [schemaTest]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemaTest.js
+[express]:https://www.npmjs.org/package/express
+[underscore]:https://www.npmjs.org/package/underscore
+[lodash]:https://www.npmjs.org/package/lodash
 [faker]:https://github.com/Marak/Faker.js
 [json-schema-mock]:https://www.npmjs.org/package/json-schema-mock
