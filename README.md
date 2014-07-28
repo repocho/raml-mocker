@@ -7,16 +7,16 @@ Node module to create random 200 responses to requests based on RAML rest defini
 
 Objective
 ---
-The goal of this plugin is to provide automatics mocked responses based on REST contracts defined in a project. This RAML rest contracts are evaluated and the plugin provides a functions to generate random responses.
+The goal of this plugin is to provide automatic mocked responses that honor your defined RAML REST contracts. These contracts are evaluated and the plugin provides functions to generate random responses.
 
-The RAML files should contain for each request you want to mock a 200 response HTTP code, application/json and a valid json schema.
+The RAML files should contain 200 HTTP responses for each request you want to mock, application/json and a valid json schema.
 
 
 
 GETTING STARTED
 ---
   - Yo need to define a RAML file like this: [definition.raml]
-  - Take care the schema file import or define inside the raml file.
+  - Import the json-schema file or define it inside the raml file.
   -
 
 
@@ -32,20 +32,20 @@ var callback = function (requests){
 };
 ramlMocker.generate(options, callback);
 ```
-Or defining instead of a path a collection of files:
+Or defining a collection of files instead of a path:
 ```javascript
 var options = {
     files: ['definition1.raml', 'folder/definition2.raml']
 };
 ```
-If your properties in schema needs a alternative logic you should use *format*. For example the schema in [schemaTest]:
+If your properties in the schema need an alternative logic you should use *format*. For example the schema in [schemaTest]:
 ```javascript
 'foo': {
     'type': 'string',
     'format': 'foo'
 }
 ```
-And in your options provide a formats definitions:
+And in your options provide format definitions:
 ```javascript
 var options = {
     path: 'test/raml',
@@ -56,7 +56,7 @@ var options = {
     }
 };
 ```
-As you could see the random generation is based on [faker], so the function to generate a specific format receives the faker object and the schema. You can use Faker for doing the logic (check the documentation).f
+As you could see the random generation is based on [faker], so the function to generate a specific format receives the faker object and the schema. You can use Faker for implementing the logic (check the documentation).
 
 And the RESULT in your callback
 ---
@@ -70,7 +70,7 @@ This generate request will return an array like this:
     }
 ]
 ```
-If you has [express] and [underscore] or [lodash] in your project. You can use a callback like this to create the mocked requests:
+If you have [express] and [underscore] or [lodash] in your project, you can use a callback like this to create the mocked requests:
 ```javascript
 var callback = function (requestsToMock){
     _.each(requestsToMock, function(reqToMock){
@@ -84,9 +84,9 @@ var callback = function (requestsToMock){
 
 TODO
 ---
-There are a lot of things TODO, this plugin is only the first step in the RAML generation and the SCHEMA generation. If you wanna colaborate don't hesitate to request it or do a fork + pull requests.
+There are lots of things TODO, this plugin is only the first step in the RAML generation and the SCHEMA generation. If you want to colaborate do not hesitate to request it or do a fork + pull requests.
 
-Some of the schema.js code is based in [json-schema-mock].
+Part of the schema.js code is based in [json-schema-mock].
 
 [definition.raml]:https://github.com/RePoChO/raml-mocker/blob/master/test/raml/definition.raml
 [schemaTest]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemaTest.js
