@@ -1,5 +1,4 @@
 'use strict';
-var fs = require('fs');
 var _ = require('lodash');
 var Faker = require('faker');
 var FormatMocker = require('./format');
@@ -94,7 +93,7 @@ var SchemaMocker = function () {
             var minLength = schema.minLength || 1;
             var maxLength = schema.maxLength || (minLength < 50 ? 50 : schema.minLength);
             var strLen = _.random(minLength, maxLength);
-            ret = Faker.Lorem.words(strLen).join(" ").substring(0, strLen).trim();
+            ret = Faker.Lorem.words(strLen).join(' ').substring(0, strLen).trim();
             return ret;
         },
 
