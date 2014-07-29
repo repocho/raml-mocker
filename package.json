@@ -35,8 +35,10 @@
   "dependencies": {
     "async": "^0.9.0",
     "faker": "^1.0.1",
+    "json-schema": "^0.2.2",
     "lodash": "^2.4.1",
     "path": "^0.4.9",
-    "raml-parser": "^0.8.7"
+    "raml-parser": "^0.8.7",
+    "request": "^2.39.0"
   }
 }
