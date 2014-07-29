@@ -7,12 +7,12 @@ var DataMocker = function (schema, formats) {
     var formatMocker = new FormatMocker(formats);
     var mocker = new SchemaMocker();
     mocker.formatMocker = formatMocker;
-    return mocker._mocker(schema);
+    return mocker._mocker(schema, schema);
 };
 
 var SchemaMocker = function () {
     return {
-        _mocker: function (schema) {
+        _mocker: function (schema, wholeSchema) {
             if (schema.enum && schema.enum.length > 0) {
                 return schema.enum[_.random(0, schema.enum.length - 1)];
             } else if (schema.format) {
@@ -28,19 +28,29 @@ var SchemaMocker = function () {
                     type = type[0].toLowerCase();
                 }
                 if (typeof (this[type + 'Mocker']) !== 'undefined') {
-                    var ret = this[type + 'Mocker'](schema);
+                    var ret = this[type + 'Mocker'](schema, wholeSchema);
                     return ret;
                 } else {
                     return undefined;
                 }
+            } else if (schema.$ref) {
+                if (/^#\//i.test(schema.$ref)) {
+                    var path = schema.$ref.replace(/^#\//i, '').split('/');
+                    var refSchema = wholeSchema;
+                    _.each(path, function (p) {
+                        refSchema = refSchema[p];
+                    });
+                    return this._mocker(refSchema, wholeSchema);
+                }
+
             } else {
                 return undefined;
             }
         },
 
-        objectMocker: function (schema) {
+        objectMocker: function (schema, wholeSchema) {
             var ret = {};
-            var self = this;
+            var _self = this;
             /**
              * TODO:
              * maxProperties
@@ -51,15 +61,15 @@ var SchemaMocker = function () {
              */
             if (schema.properties) {
                 _.each(schema.properties, function (value, key) {
-                    ret[key] = self._mocker(value);
+                    ret[key] = _self._mocker(value, wholeSchema);
                 });
             }
             return ret;
         },
 
-        arrayMocker: function (schema) {
+        arrayMocker: function (schema, wholeSchema) {
             var ret = [];
-            var self = this;
+            var _self = this;
             /**
              * TODO:
              * additionalItems and items
@@ -69,12 +79,12 @@ var SchemaMocker = function () {
              */
             if (_.isArray(schema.items)) {
                 _.each(schema.items, function (item) {
-                    ret.push(self._mocker(item));
+                    ret.push(_self._mocker(item, wholeSchema));
                 });
             } else if (_.isObject(schema.items)) {
                 var size = _.random(schema.minItems || 1, schema.maxItems || 5);
                 _.times(size, function () {
-                    ret.push(self._mocker(schema.items));
+                    ret.push(_self._mocker(schema.items, wholeSchema));
                 });
             }
             return ret;
