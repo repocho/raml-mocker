@@ -1,9 +1,11 @@
 'use strict';
-var path = require('path'),
+var request = require('request'),
+    path = require('path'),
     fs = require('fs'),
     async = require('async'),
     raml = require('raml-parser'),
     _ = require('lodash'),
+    jsonSchema = require('json-schema'),
     schemaMocker = require('./schema.js');
 
 function generate(options, callback) {
@@ -62,9 +64,10 @@ function generateFromFiles(files, formats, callback) {
     var requestsToMock = [];
     async.each(files, function (file, cb) {
         raml.loadFile(file).then(function (data) {
-            var m = getRamlRequestsToMock(data, '/', formats);
-            requestsToMock = _.union(requestsToMock, m);
-            cb();
+            getRamlRequestsToMock(data, '/', formats, function (reqs) {
+                requestsToMock = _.union(requestsToMock, reqs);
+                cb();
+            });
         }, function (error) {
             cb('Error parsing: ' + error);
         });
@@ -77,7 +80,7 @@ function generateFromFiles(files, formats, callback) {
     });
 }
 
-function getRamlRequestsToMock(definition, uri, formats) {
+function getRamlRequestsToMock(definition, uri, formats, callback) {
     var requestsToMock = [];
     if (definition.relativeUri) {
         var nodeURI = definition.relativeUri;
@@ -88,30 +91,90 @@ function getRamlRequestsToMock(definition, uri, formats) {
         }
         uri = (uri + '/' + nodeURI).replace(/\/{2,}/g, '/');
     }
+    var tasks = [];
     if (definition.methods) {
-        _.each(definition.methods, function (method) {
-            if (method.method && /get|post|put|delete/i.test(method.method) && method.responses && method.responses[200] && method.responses[200].body && method.responses[200].body['application/json'] && method.responses[200].body['application/json'].schema) {
-                try {
-                    var schema = JSON.parse(method.responses[200].body['application/json'].schema);
-                    requestsToMock.push({
-                        uri: uri,
-                        method: method.method,
-                        mock: function () {
-                            return schemaMocker(schema, formats);
-                        }
-                    });
-                } catch (exception) {
-                    console.log(exception.stack);
-                }
-            }
+        tasks.push(function (cb) {
+            getRamlRequestsToMockMethods(definition, uri, formats, function (reqs) {
+                requestsToMock = _.union(requestsToMock, reqs);
+                cb();
+            });
         });
     }
     if (definition.resources) {
-        _.each(definition.resources, function (def) {
-            requestsToMock = _.union(requestsToMock, getRamlRequestsToMock(def, uri, formats));
+        tasks.push(function (cb) {
+            getRamlRequestsToMockResources(definition, uri, formats, function (reqs) {
+                requestsToMock = _.union(requestsToMock, reqs);
+                cb();
+            });
         });
     }
-    return requestsToMock;
+    async.parallel(tasks, function (err) {
+        if (err) {
+            throw err;
+        }
+        callback(requestsToMock);
+    });
+}
+
+function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
+    async.map(definition.methods, function (method, cb) {
+        if (method.method && /get|post|put|delete/i.test(method.method) && method.responses && method.responses[200] && method.responses[200].body && method.responses[200].body['application/json'] && method.responses[200].body['application/json'].schema) {
+            try {
+                var schema = JSON.parse(method.responses[200].body['application/json'].schema);
+                if (schema) {
+                    var $schema = schema.$schema;
+                    if ($schema) {
+                        request({
+                            url: $schema,
+                            json: true
+                        }, function (error, response, masterSchema) {
+                            if (!error && response.statusCode === 200) {
+                                delete schema.$schema;
+                                var report = jsonSchema.validate(schema, masterSchema);
+                                if (report.errors.length === 0) {
+                                    //JSON is valid against the schema
+                                    cb(null, {
+                                        uri: uri,
+                                        method: method.method,
+                                        mock: function () {
+                                            return schemaMocker(schema, formats);
+                                        }
+                                    });
+                                } else {
+                                    console.log(report.errors);
+                                    cb(report.errors);
+                                }
+                            }
+                        });
+
+                    }
+                }
+            } catch (exception) {
+                cb(exception.stack);
+            }
+        }
+    }, function (err, results) {
+        if (err) {
+            throw err;
+        }
+        callback(results);
+    });
+
+}
+
+function getRamlRequestsToMockResources(definition, uri, formats, callback) {
+    var requestsToMock = [];
+    async.each(definition.resources, function (def, cb) {
+        getRamlRequestsToMock(def, uri, formats, function (reqs) {
+            requestsToMock = _.union(requestsToMock, reqs);
+            cb(null);
+        });
+    }, function (err) {
+        if (err) {
+            throw err;
+        }
+        callback(requestsToMock);
+    });
 }
 module.exports = {
     generate: generate
