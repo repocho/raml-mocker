@@ -26,12 +26,17 @@
             "type": "boolean"
           },
           "test": {
-            "$ref": "file:///other.json"
+            "$ref": "#/definitions/other"
           }
         },
         "required": ["id", "text", "date", "number"]
       }
     }
   },
-  "required": ["arrayOfObjects"]
+  "required": ["arrayOfObjects"],
+  "definitions": {
+    "other": {
+      "type": "number"
+    }
+  }
 }
