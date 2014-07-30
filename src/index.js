@@ -144,14 +144,21 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
                                     console.log(report.errors);
                                     cb(report.errors);
                                 }
+                            } else {
+                                cb('Error getting schema: '.$schema);
                             }
                         });
-
+                    } else {
+                        cb('Please define a schema: '.$schema);
                     }
+                } else {
+                    cb('Please define a schema.');
                 }
             } catch (exception) {
                 cb(exception.stack);
             }
+        } else {
+            cb('Please check the method(get,post,put,delete), responses(200) and the type should be "application/json"');
         }
     }, function (err, results) {
         if (err) {
