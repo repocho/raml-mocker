@@ -13,15 +13,24 @@ var DataMocker = function (schema, formats) {
 var SchemaMocker = function () {
     return {
         _mocker: function (schema, wholeSchema) {
-            if (schema.enum && schema.enum.length > 0) {
+            if (schema.$ref) {
+                if (/^#\//i.test(schema.$ref)) {
+                    var path = schema.$ref.replace(/^#\//i, '').split('/');
+                    var refSchema = wholeSchema;
+                    _.each(path, function (p) {
+                        refSchema = refSchema[p];
+                    });
+                    var newSchema = _.merge(refSchema, _.omit(schema, '$ref'));
+                    return this._mocker(newSchema, wholeSchema);
+                }
+            } else if (schema.enum && schema.enum.length > 0) {
                 return schema.enum[_.random(0, schema.enum.length - 1)];
+            } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
+                return this._mockSubSchema(schema, wholeSchema);
             } else if (schema.format) {
                 var format = schema.format.toLowerCase();
                 var formatRet = this.formatMocker.format(format, schema);
                 return formatRet;
-            } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
-                // TODO
-                return undefined;
             } else if (schema.type) {
                 var type = schema.type.toLowerCase();
                 if (_.isArray(type)) {
@@ -33,21 +42,38 @@ var SchemaMocker = function () {
                 } else {
                     return undefined;
                 }
-            } else if (schema.$ref) {
-                if (/^#\//i.test(schema.$ref)) {
-                    var path = schema.$ref.replace(/^#\//i, '').split('/');
-                    var refSchema = wholeSchema;
-                    _.each(path, function (p) {
-                        refSchema = refSchema[p];
-                    });
-                    return this._mocker(refSchema, wholeSchema);
-                }
-
             } else {
                 return undefined;
             }
         },
-
+        _mockSubSchema: function (schema, wholeSchema) {
+            if (schema.allOf || schema.anyOf || schema.oneOf) {
+                var newSchema = {};
+                if (schema.allOf && _.isArray(schema.allOf)) {
+                    _.each(schema.allOf, function (s) {
+                        newSchema = _.merge(newSchema, s);
+                    });
+                } else if (schema.anyOf && _.isArray(schema.anyOf)) {
+                    _.each(schema.anyOf, function (s) {
+                        if (_.random(0, 100) >= 50) {
+                            newSchema = _.merge(newSchema, s);
+                        }
+                    });
+                } else if (schema.oneOf && _.isArray(schema.oneOf)) {
+                    newSchema = schema.oneOf[_.random(0, schema.oneOf.length - 1)];
+                }
+                if (!_.isEmpty(newSchema)) {
+                    newSchema = _.merge(newSchema, _.omit(schema, ['allOf', 'anyOf', 'oneOf', 'not']));
+                    console.log(newSchema);
+                    return this._mocker(newSchema, wholeSchema);
+                } else {
+                    return undefined;
+                }
+            } else {
+                //And schema.not
+                return undefined;
+            }
+        },
         objectMocker: function (schema, wholeSchema) {
             var ret = {};
             var _self = this;
