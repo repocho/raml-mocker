@@ -26,6 +26,7 @@
             "type": "boolean"
           },
           "test": {
+            "format": "timestamp",
             "$ref": "#/definitions/other"
           },
           "anyOfTest": {
