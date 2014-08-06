@@ -27,7 +27,7 @@ var schema = {
             'format': 'foo'
         }
     },
-    'required': ['state', 'deadline', 'remainDays', 'needDays', 'seasonNum']
+    'required': ['state', 'deadline', 'remainDays', 'test', 'foo']
 };
 
 var formats = {
