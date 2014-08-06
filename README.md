@@ -126,7 +126,7 @@ There are lots of things TODO, this plugin is only the first step in the RAML ge
 Part of the schema.js code is based in [json-schema-mock].
 
 [definition.raml]:https://github.com/RePoChO/raml-mocker/blob/master/test/raml/definition.raml
-[the test schema]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemas/objectDefinition.js
+[the test schema]:https://github.com/RePoChO/raml-mocker/blob/master/test/raml/schemas/objectDefinition.js
 [schemaTest]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemaTest.js
 [express]:https://www.npmjs.org/package/express
 [underscore]:https://www.npmjs.org/package/underscore
