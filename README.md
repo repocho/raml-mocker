@@ -38,7 +38,7 @@ var options = {
     files: ['definition1.raml', 'folder/definition2.raml']
 };
 ```
-If your properties in the schema need an alternative logic you should use *format*. For example the schema in [schemaTest]:
+If your properties in the schema need an alternative logic you should use *format*. For example the schema in [the test schema] or in [schemaTest]:
 ```javascript
 'foo': {
     'type': 'string',
@@ -83,6 +83,41 @@ var callback = function (requestsToMock){
 };
 ```
 
+Json-Schema Support Draft-04
+---
+**References**
+
+For the moment this plugin only support internal references, for example, this should be valid:
+```json
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "test": {
+            "format": "timestamp",
+            "$ref": "#/definitions/other"
+        }
+    },
+    "required": ["test"],
+    "definitions": {
+        "other": {
+            "type": "number"
+        }
+    }
+}
+```
+
+**Keywords support**
+
+* enum : **✓ yes**
+* type: **✓ yes**
+* allOf: **✓ yes**
+* anyOf: **✓ yes**
+* oneOf: **✓ yes**
+* not: **NO** (very difficult to generate a random mock from **not** json-schemas)
+
+If you need a example please check [the test schema]
+
 
 TODO
 ---
@@ -91,6 +126,7 @@ There are lots of things TODO, this plugin is only the first step in the RAML ge
 Part of the schema.js code is based in [json-schema-mock].
 
 [definition.raml]:https://github.com/RePoChO/raml-mocker/blob/master/test/raml/definition.raml
+[the test schema]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemas/objectDefinition.js
 [schemaTest]:https://github.com/RePoChO/raml-mocker/blob/master/test/schemaTest.js
 [express]:https://www.npmjs.org/package/express
 [underscore]:https://www.npmjs.org/package/underscore
