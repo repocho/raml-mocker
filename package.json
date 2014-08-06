@@ -1,6 +1,6 @@
 {
   "name": "raml-mocker",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Node module to create random responses to requests based on RAML rest definition and json-schema.",
   "main": "src/index.js",
   "directories": {
