@@ -20,7 +20,7 @@ var SchemaMocker = function () {
                     _.each(path, function (p) {
                         refSchema = refSchema[p];
                     });
-                    var newSchema = _.merge(refSchema, _.omit(schema, '$ref'));
+                    var newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
                     return this._mocker(newSchema, wholeSchema);
                 }
             } else if (schema.enum && schema.enum.length > 0) {
@@ -51,20 +51,19 @@ var SchemaMocker = function () {
                 var newSchema = {};
                 if (schema.allOf && _.isArray(schema.allOf)) {
                     _.each(schema.allOf, function (s) {
-                        newSchema = _.merge(newSchema, s);
+                        newSchema = _.merge(_.clone(newSchema, true), s);
                     });
                 } else if (schema.anyOf && _.isArray(schema.anyOf)) {
                     _.each(schema.anyOf, function (s) {
                         if (_.random(0, 100) >= 50) {
-                            newSchema = _.merge(newSchema, s);
+                            newSchema = _.merge(_.clone(newSchema, true), s);
                         }
                     });
                 } else if (schema.oneOf && _.isArray(schema.oneOf)) {
                     newSchema = schema.oneOf[_.random(0, schema.oneOf.length - 1)];
                 }
                 if (!_.isEmpty(newSchema)) {
-                    newSchema = _.merge(newSchema, _.omit(schema, ['allOf', 'anyOf', 'oneOf', 'not']));
-                    console.log(newSchema);
+                    newSchema = _.merge(_.clone(newSchema, true), _.omit(schema, ['allOf', 'anyOf', 'oneOf', 'not']));
                     return this._mocker(newSchema, wholeSchema);
                 } else {
                     return undefined;
