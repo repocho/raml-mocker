@@ -133,3 +133,8 @@ Part of the schema.js code is based in [json-schema-mock].
 [lodash]:https://www.npmjs.org/package/lodash
 [faker]:https://github.com/Marak/Faker.js
 [json-schema-mock]:https://www.npmjs.org/package/json-schema-mock
+
+
+##History Log
+###0.1.6
+- Fixes an error without showing it in the console.

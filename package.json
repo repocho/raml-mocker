@@ -1,44 +1,44 @@
 {
-  "name": "raml-mocker",
-  "version": "0.1.5",
-  "description": "Node module to create random responses to requests based on RAML rest definition and json-schema.",
-  "main": "src/index.js",
-  "directories": {
-    "test": "test",
-    "src": "src"
-  },
-  "scripts": {
-    "test": "node test/ramlTest.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/RePoChO/raml-mocker.git"
-  },
-  "keywords": [
-    "RAML",
-    "json",
-    "schema",
-    "json-schema",
-    "faker",
-    "mock",
-    "mocker",
-    "fixture",
-    "random",
-    "api"
-  ],
-  "author": "David Vega Fontelos",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/RePoChO/raml-mocker/issues"
-  },
-  "homepage": "https://github.com/RePoChO/raml-mocker",
-  "dependencies": {
-    "async": "^0.9.0",
-    "faker": "^1.0.1",
-    "json-schema": "^0.2.2",
-    "lodash": "^2.4.1",
-    "path": "^0.4.9",
-    "raml-parser": "^0.8.7",
-    "request": "^2.39.0"
-  }
+    "name": "raml-mocker",
+    "version": "0.1.6",
+    "description": "Node module to create random responses to requests based on RAML rest definition and json-schema.",
+    "main": "src/index.js",
+    "directories": {
+        "test": "test",
+        "src": "src"
+    },
+    "scripts": {
+        "test": "node test/ramlTest.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/RePoChO/raml-mocker.git"
+    },
+    "keywords": [
+        "RAML",
+        "json",
+        "schema",
+        "json-schema",
+        "faker",
+        "mock",
+        "mocker",
+        "fixture",
+        "random",
+        "api"
+    ],
+    "author": "David Vega Fontelos",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/RePoChO/raml-mocker/issues"
+    },
+    "homepage": "https://github.com/RePoChO/raml-mocker",
+    "dependencies": {
+        "async": "^0.9.0",
+        "faker": "^1.0.1",
+        "json-schema": "^0.2.2",
+        "lodash": "^2.4.1",
+        "path": "^0.4.9",
+        "raml-parser": "^0.8.7",
+        "request": "^2.39.0"
+    }
 }
