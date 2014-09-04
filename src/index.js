@@ -110,7 +110,7 @@ function getRamlRequestsToMock(definition, uri, formats, callback) {
     }
     async.parallel(tasks, function (err) {
         if (err) {
-            throw err;
+            console.log(err);
         }
         callback(requestsToMock);
     });
@@ -162,9 +162,9 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
         }
     }, function (err, results) {
         if (err) {
-            throw err;
+            console.log(err);
         }
-        callback(results);
+        callback(_.without(results, undefined, null));
     });
 
 }
@@ -178,7 +178,7 @@ function getRamlRequestsToMockResources(definition, uri, formats, callback) {
         });
     }, function (err) {
         if (err) {
-            throw err;
+            console.log(err);
         }
         callback(requestsToMock);
     });
