@@ -84,7 +84,11 @@ If you have [express] and [underscore] or [lodash] in your project, you can use 
 var callback = function (requestsToMock){
     _.each(requestsToMock, function(reqToMock){
         app[reqToMock.method](reqToMock.uri, function(req,res){
-            res.send(reqToMock.mock());
+            var code = 200;
+            if (reqToMock.defaultCode) {
+                code = reqToMock.defaultCode;
+            }
+            res.send(code ,reqToMock.mock());
         });
     });
 };
