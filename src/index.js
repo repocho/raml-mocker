@@ -122,7 +122,6 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             var responsesMethodByCode = getResponsesByCode(method.responses);
 
             var methodMocker = new RequestMocker(uri, method.method);
-            console.log(methodMocker);
 
             var currentMockDefaultCode = null;
             _.each(responsesMethodByCode, function (reqDefinition) {
