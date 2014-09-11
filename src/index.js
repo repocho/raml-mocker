@@ -1,12 +1,11 @@
 'use strict';
-var request = require('request'),
-    path = require('path'),
+var path = require('path'),
     fs = require('fs'),
     async = require('async'),
     raml = require('raml-parser'),
     _ = require('lodash'),
-    jsonSchema = require('json-schema'),
-    schemaMocker = require('./schema.js');
+    schemaMocker = require('./schema.js'),
+    RequestMocker = require('./requestMocker.js');
 
 function generate(options, callback) {
     var formats = {};
@@ -115,26 +114,6 @@ function getRamlRequestsToMock(definition, uri, formats, callback) {
         callback(requestsToMock);
     });
 }
-var MethodMocker = function (uri, method) {
-    this.uri = uri;
-    this.method = method;
-    this.responses = {};
-};
-MethodMocker.prototype = _.extend(MethodMocker.prototype, {
-    mockByCode: function (code) {
-        if (!_.isUndefined(this.responses[code])) {
-            return this.responses[code]();
-        } else {
-            throw "Code not defined in responses";
-        }
-    },
-    getResponses: function () {
-        return this.responses;
-    },
-    addResponse: function (code, fun) {
-        this.responses[code] = fun;
-    }
-});
 
 function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
     var responsesByCode = [];
@@ -142,19 +121,26 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
         if (method.method && /get|post|put|delete/i.test(method.method) && method.responses) {
             var responsesMethodByCode = getResponsesByCode(method.responses);
 
-            var methodMocker = new MethodMocker(uri, method.method);
+            var methodMocker = new RequestMocker(uri, method.method);
             console.log(methodMocker);
 
             var currentMockDefaultCode = null;
             _.each(responsesMethodByCode, function (reqDefinition) {
                 methodMocker.addResponse(reqDefinition.code, function () {
-                    return schemaMocker(reqDefinition.schema, formats);
+                    if (reqDefinition.schema) {
+                        return schemaMocker(reqDefinition.schema, formats);
+                    } else {
+                        return null;
+                    }
                 });
                 if ((!currentMockDefaultCode || currentMockDefaultCode > reqDefinition.code) && /^2\d\d$/.test(reqDefinition.code)) {
                     methodMocker.mock = methodMocker.getResponses()[reqDefinition.code];
                     currentMockDefaultCode = reqDefinition.code;
                 }
             });
+            if (currentMockDefaultCode) {
+                methodMocker.defaultCode = currentMockDefaultCode;
+            }
             responsesByCode.push(methodMocker);
         }
     });
@@ -178,6 +164,11 @@ function getResponsesByCode(responses) {
                 } catch (exception) {
                     console.log(exception.stack);
                 }
+            } else {
+                responsesByCode.push({
+                    code: code,
+                    schema: null
+                });
             }
         }
     });
