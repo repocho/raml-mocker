@@ -62,7 +62,7 @@ As you could see the random generation is based on [faker], so the function to g
 
 And the RESULT in your callback
 ---
-This generated request will return an array or object like this:
+This generated request will return an array of objects like this:
 ```javascript
 [
     {
@@ -128,7 +128,7 @@ If you need a example please check [the test schema]
 
 TODO
 ---
-There are lots of things TODO, this plugin is only the first step in the RAML generation and the SCHEMA generation. If you want to colaborate do not hesitate to request it or do a fork + pull requests.
+If you have an improvement please open an issue. If you want to colaborate do not hesitate to request it or do a fork + pull requests. I'll be gratefully.
 
 Part of the schema.js code is based in [json-schema-mock].
 
@@ -143,5 +143,7 @@ Part of the schema.js code is based in [json-schema-mock].
 
 
 ###History Log
+####0.1.7
+- Adds support to multiple http codes per uri & method in raml files.
 ####0.1.6
 - Fixes an error without showing it in the console.
