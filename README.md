@@ -1,7 +1,7 @@
 raml-mocker [![Build Status](https://travis-ci.org/RePoChO/raml-mocker.svg?branch=master)](https://travis-ci.org/RePoChO/raml-mocker) [![NPM version](https://badge.fury.io/js/raml-mocker.svg)](http://badge.fury.io/js/raml-mocker) [![Dependency Status](https://gemnasium.com/RePoChO/raml-mocker.svg)](https://gemnasium.com/RePoChO/raml-mocker)
 ===========
 
-Node module to create random 200 responses to requests based on RAML rest definition.
+Node module to create random responses to requests based on RAML rest definition.
 
 
 
@@ -9,7 +9,7 @@ Objective
 ---
 The goal of this plugin is to provide automatic mocked responses that honor your defined RAML REST contracts. These contracts are evaluated and the plugin provides functions to generate random responses.
 
-The RAML files should contain 200 HTTP responses for each request you want to mock, application/json and a valid json schema.
+The RAML files should contain HTTP responses for each request you want to mock, application/json and a valid json schema.
 
 
 
@@ -62,13 +62,20 @@ As you could see the random generation is based on [faker], so the function to g
 
 And the RESULT in your callback
 ---
-This generated request will return an array like this:
+This generated request will return an array of objects like this:
 ```javascript
 [
     {
+        /** URI of the request to mock */
         uri: '/test/:id/objectDef'
+        /** Method of the request (get, post, ...) */
         method: 'get',
+        /** Function by default to return the mock (codes 2XX defined in the RAML). */
         mock: [Function]
+        /** If you don't define a 2XX code or want to use randomly other code responses. You can use this function
+          * Just use instead of mock(); -> mockByCode(418);
+          */
+        mockByCode: [Function](code)
     }
 ]
 ```
@@ -121,7 +128,7 @@ If you need a example please check [the test schema]
 
 TODO
 ---
-There are lots of things TODO, this plugin is only the first step in the RAML generation and the SCHEMA generation. If you want to colaborate do not hesitate to request it or do a fork + pull requests.
+If you have an improvement please open an issue. If you want to colaborate do not hesitate to request it or do a fork + pull requests. I'll be gratefully.
 
 Part of the schema.js code is based in [json-schema-mock].
 
@@ -135,6 +142,9 @@ Part of the schema.js code is based in [json-schema-mock].
 [json-schema-mock]:https://www.npmjs.org/package/json-schema-mock
 
 
-###History Log
-####0.1.6
+#### History Log
+##### 0.1.7
+- Adds support to multiple http codes per uri & method in raml files.
+
+##### 0.1.6
 - Fixes an error without showing it in the console.

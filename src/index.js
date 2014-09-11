@@ -115,58 +115,73 @@ function getRamlRequestsToMock(definition, uri, formats, callback) {
         callback(requestsToMock);
     });
 }
+var MethodMocker = function (uri, method) {
+    this.uri = uri;
+    this.method = method;
+    this.responses = {};
+};
+MethodMocker.prototype = _.extend(MethodMocker.prototype, {
+    mockByCode: function (code) {
+        if (!_.isUndefined(this.responses[code])) {
+            return this.responses[code]();
+        } else {
+            throw "Code not defined in responses";
+        }
+    },
+    getResponses: function () {
+        return this.responses;
+    },
+    addResponse: function (code, fun) {
+        this.responses[code] = fun;
+    }
+});
 
 function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
-    async.map(definition.methods, function (method, cb) {
-        if (method.method && /get|post|put|delete/i.test(method.method) && method.responses && method.responses[200] && method.responses[200].body && method.responses[200].body['application/json'] && method.responses[200].body['application/json'].schema) {
-            try {
-                var schema = JSON.parse(method.responses[200].body['application/json'].schema);
-                if (schema) {
-                    var $schema = schema.$schema;
-                    if ($schema) {
-                        request({
-                            url: $schema,
-                            json: true
-                        }, function (error, response, masterSchema) {
-                            if (!error && response.statusCode === 200) {
-                                delete schema.$schema;
-                                var report = jsonSchema.validate(schema, masterSchema);
-                                if (report.errors.length === 0) {
-                                    //JSON is valid against the schema
-                                    cb(null, {
-                                        uri: uri,
-                                        method: method.method,
-                                        mock: function () {
-                                            return schemaMocker(schema, formats);
-                                        }
-                                    });
-                                } else {
-                                    console.log(report.errors);
-                                    cb(report.errors);
-                                }
-                            } else {
-                                cb('Error getting schema: '.$schema);
-                            }
-                        });
-                    } else {
-                        cb('Please define a schema: '.$schema);
-                    }
-                } else {
-                    cb('Please define a schema.');
-                }
-            } catch (exception) {
-                cb(exception.stack);
-            }
-        } else {
-            cb('Please check the method(get,post,put,delete), responses(200) and the type should be "application/json"');
-        }
-    }, function (err, results) {
-        if (err) {
-            console.log(err);
-        }
-        callback(_.without(results, undefined, null));
-    });
+    var responsesByCode = [];
+    _.each(definition.methods, function (method) {
+        if (method.method && /get|post|put|delete/i.test(method.method) && method.responses) {
+            var responsesMethodByCode = getResponsesByCode(method.responses);
 
+            var methodMocker = new MethodMocker(uri, method.method);
+            console.log(methodMocker);
+
+            var currentMockDefaultCode = null;
+            _.each(responsesMethodByCode, function (reqDefinition) {
+                methodMocker.addResponse(reqDefinition.code, function () {
+                    return schemaMocker(reqDefinition.schema, formats);
+                });
+                if ((!currentMockDefaultCode || currentMockDefaultCode > reqDefinition.code) && /^2\d\d$/.test(reqDefinition.code)) {
+                    methodMocker.mock = methodMocker.getResponses()[reqDefinition.code];
+                    currentMockDefaultCode = reqDefinition.code;
+                }
+            });
+            responsesByCode.push(methodMocker);
+        }
+    });
+    callback(responsesByCode);
+}
+
+function getResponsesByCode(responses) {
+    var responsesByCode = [];
+    _.each(responses, function (response, code) {
+        if (!_.isNaN(Number(code))) {
+            code = Number(code);
+            if (response.body && response.body['application/json'] && response.body['application/json'].schema) {
+                try {
+                    var schema = JSON.parse(response.body['application/json'].schema);
+                    if (schema) {
+                        responsesByCode.push({
+                            code: code,
+                            schema: schema
+                        });
+                    }
+                } catch (exception) {
+                    console.log(exception.stack);
+                }
+            }
+        }
+    });
+    return responsesByCode;
 }
 
 function getRamlRequestsToMockResources(definition, uri, formats, callback) {
