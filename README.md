@@ -142,9 +142,9 @@ Part of the schema.js code is based in [json-schema-mock].
 [json-schema-mock]:https://www.npmjs.org/package/json-schema-mock
 
 
-###History Log
-####0.1.7
+#### History Log
+##### 0.1.7
 - Adds support to multiple http codes per uri & method in raml files.
 
-####0.1.6
+##### 0.1.6
 - Fixes an error without showing it in the console.
