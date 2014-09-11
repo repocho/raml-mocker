@@ -147,6 +147,11 @@ Part of the schema.js code is based in [json-schema-mock].
 
 
 #### History Log
+##### 0.1.8
+- Adds the possibility to return only the http code without a json.
+- Fixes some issues.
+- Removes unneeded packages.
+
 ##### 0.1.7
 - Adds support to multiple http codes per uri & method in raml files.
 
