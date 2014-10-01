@@ -100,7 +100,6 @@ var SchemaMocker = function () {
              * additionalItems and items
              * maxItems
              * minItems
-             * uniqueItems
              */
             if (_.isArray(schema.items)) {
                 _.each(schema.items, function (item) {
@@ -112,6 +111,12 @@ var SchemaMocker = function () {
                     ret.push(_self._mocker(schema.items, wholeSchema));
                 });
             }
+
+            // handle "uniqueItems"
+            if (_.has(schema, 'uniqueItems') && schema.uniqueItems) {
+                ret = _.uniq(ret);
+            }
+
             return ret;
         },
 
