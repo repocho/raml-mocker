@@ -146,7 +146,7 @@ Part of the schema.js code is based in [json-schema-mock].
 
 
 #### History Log
-##### 0.1.9
+##### 0.1.10
 - Allows upper case in the format name definition. Fixes [#1]:https://github.com/RePoChO/raml-mocker/issues/1
 ##### 0.1.9
 - Adds support for uniqueItems schema keyword.
