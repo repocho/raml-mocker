@@ -43,6 +43,8 @@ var FormatMocker = function (formats) {
             var result;
             if (typeof (formats[format]) === 'function') {
                 result = formats[format](Faker, schema);
+            } else if (typeof (formats[format.toLowerCase()]) === 'function') {
+                result = formats[format.toLowerCase()](Faker, schema);
             }
             return result;
         }

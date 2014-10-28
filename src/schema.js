@@ -28,7 +28,7 @@ var SchemaMocker = function () {
             } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
                 return this._mockSubSchema(schema, wholeSchema);
             } else if (schema.format) {
-                var format = schema.format.toLowerCase();
+                var format = schema.format;
                 var formatRet = this.formatMocker.format(format, schema);
                 return formatRet;
             } else if (schema.type) {
