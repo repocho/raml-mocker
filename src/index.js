@@ -140,11 +140,35 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             if (currentMockDefaultCode) {
                 methodMocker.defaultCode = currentMockDefaultCode;
             }
+            if (method.body) {
+                methodMocker.body = function () {
+                    return schemaMocker(getRequestBody(method).schema, formats);
+                }
+            }
             responsesByCode.push(methodMocker);
         }
     });
     callback(responsesByCode);
 }
+
+function getRequestBody (method) {
+    if (method.body && method.body['application/json'] && method.body['application/json'].schema) {
+        try {
+            var schema = JSON.parse(method.body['application/json'].schema);
+            if (schema) {
+                return {
+                    schema: schema
+                };
+            }
+        } catch (exception) {
+            console.log(exception.stack);
+        }
+    } else {
+        return {
+            schema: null
+        };
+    }
+};
 
 function getResponsesByCode(responses) {
     var responsesByCode = [];
