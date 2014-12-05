@@ -15,23 +15,24 @@ var SchemaMocker = function () {
     return {
         _mocker: function (schema, wholeSchema) {
             if (schema.$ref) {
-                if (/^#\//i.test(schema.$ref)) {
-                    var path = schema.$ref.replace(/^#\//i, '').split('/');
+                var ref = schema.$ref;
+                if (/^#\//i.test(ref)) {
+                    var path = ref.replace(/^#\//i, '').split('/');
                     var refSchema = wholeSchema;
                     _.each(path, function (p) {
                         refSchema = refSchema[p];
                     });
                     var newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
                     return this._mocker(newSchema, wholeSchema);
-                } else { // if reference to external json-file
-                    var ref = schema.$ref.slice();
+                } else { // if reference to json file in the node working directory folder
 
                     // relative path to json file
-                    var relFilePath = schema.$ref.substring(0, schema.$ref.search('#')); 
+                    var relFilePath = ref.substring(0, ref.search('#')); 
                     // absoulute path to json file
                     var absFilePath = process.env.PWD + '/' + relFilePath;
                     // property path to follow
-                    var propPath = ref.substr(ref.search('#')+2, ref.length).split('/');
+                    var propPath = ref.substr(ref.search('#'), ref.length).split('/');
+                    propPath.shift();
 
                     console.log('filePath: ', absFilePath);
                     console.log('propPath: ', propPath);
@@ -40,11 +41,9 @@ var SchemaMocker = function () {
                         var data = fs.readFileSync(absFilePath, 'utf8');
                         var obj = JSON.parse(data);
                         var externalSchema = obj;
-                        if (propPath.length > 1) {
-                            _.each(propPath, function (p) {
-                                externalSchema = externalSchema[p];
-                            });
-                        }
+                        _.each(propPath, function (p) {
+                            externalSchema = externalSchema[p];
+                        });
                         var newSchema = _.merge(externalSchema, _.omit(schema, '$ref'));
                         return this._mocker(newSchema, wholeSchema);
                     } catch (err) {

@@ -97,23 +97,31 @@ Json-Schema Support Draft-04
 ---
 **References**
 
-For the moment this plugin only support internal references, for example, this should be valid:
+For the moment this plugin only support references to json files in folders under the working folder of the node process that runs the raml-mocker, for example, this should be valid:
 ```json
+// schemas/thisSchema.json
 {
     "$schema": "http://json-schema.org/schema",
     "type": "object",
     "properties": {
         "test": {
             "format": "timestamp",
-            "$ref": "#/definitions/other"
+            "$ref": "schemas/otherSchema.json#"
         }
     },
     "required": ["test"],
-    "definitions": {
-        "other": {
-            "type": "number"
+}
+
+// schemas/otherSchema.json
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "test": {
+            "format": "timestamp",
+            "type": "integer"
         }
-    }
+    },
 }
 ```
 
