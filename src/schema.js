@@ -1,5 +1,6 @@
 'use strict';
 var _ = require('lodash');
+var fs = require('fs');
 var Faker = require('faker');
 var FormatMocker = require('./format');
 
@@ -22,6 +23,33 @@ var SchemaMocker = function () {
                     });
                     var newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
                     return this._mocker(newSchema, wholeSchema);
+                } else { // if reference to external json-file
+                    var ref = schema.$ref.slice();
+
+                    // relative path to json file
+                    var relFilePath = schema.$ref.substring(0, schema.$ref.search('#')); 
+                    // absoulute path to json file
+                    var absFilePath = process.env.PWD + '/' + relFilePath;
+                    // property path to follow
+                    var propPath = ref.substr(ref.search('#')+2, ref.length).split('/');
+
+                    console.log('filePath: ', absFilePath);
+                    console.log('propPath: ', propPath);
+
+                    try {
+                        var data = fs.readFileSync(absFilePath, 'utf8');
+                        var obj = JSON.parse(data);
+                        var externalSchema = obj;
+                        if (propPath.length > 1) {
+                            _.each(propPath, function (p) {
+                                externalSchema = externalSchema[p];
+                            });
+                        }
+                        var newSchema = _.merge(externalSchema, _.omit(schema, '$ref'));
+                        return this._mocker(newSchema, wholeSchema);
+                    } catch (err) {
+                        console.error(err);
+                    }
                 }
             } else if (schema.enum && schema.enum.length > 0) {
                 return schema.enum[_.random(0, schema.enum.length - 1)];
