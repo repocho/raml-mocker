@@ -126,6 +126,9 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             var currentMockDefaultCode = null;
             _.each(responsesMethodByCode, function (reqDefinition) {
                 methodMocker.addResponse(reqDefinition.code, function () {
+                    if (reqDefinition.example) {
+                        return reqDefinition.example;
+                    }
                     if (reqDefinition.schema) {
                         return schemaMocker(reqDefinition.schema, formats);
                     } else {
@@ -149,26 +152,24 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 function getResponsesByCode(responses) {
     var responsesByCode = [];
     _.each(responses, function (response, code) {
+        var body = response.body && response.body['application/json'];
+        var schema = null;
+        var example = null;
         if (!_.isNaN(Number(code))) {
             code = Number(code);
-            if (response.body && response.body['application/json'] && response.body['application/json'].schema) {
+            if (body) {
                 try {
-                    var schema = JSON.parse(response.body['application/json'].schema);
-                    if (schema) {
-                        responsesByCode.push({
-                            code: code,
-                            schema: schema
-                        });
-                    }
+                    schema = body.schema && JSON.parse(body.schema);
+                    example = body.example && JSON.parse(body.example);
                 } catch (exception) {
                     console.log(exception.stack);
                 }
-            } else {
-                responsesByCode.push({
-                    code: code,
-                    schema: null
-                });
             }
+            responsesByCode.push({
+                code: code,
+                schema: schema,
+                example: example
+            });
         }
     });
     return responsesByCode;
