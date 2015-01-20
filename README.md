@@ -99,7 +99,6 @@ Json-Schema Support Draft-04
 
 This plugin supports internal references and also references to json files under the working folder of the node process running raml-mocker. For example:
 ```json
-+// schemas/thisSchema.json
 {
     "$schema": "http://json-schema.org/schema",
     "type": "object",
