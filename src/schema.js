@@ -16,27 +16,23 @@ var SchemaMocker = function () {
         _mocker: function (schema, wholeSchema) {
             if (schema.$ref) {
                 var ref = schema.$ref;
+                var newSchema;
                 if (/^#\//i.test(ref)) {
                     var path = ref.replace(/^#\//i, '').split('/');
                     var refSchema = wholeSchema;
                     _.each(path, function (p) {
                         refSchema = refSchema[p];
                     });
-                    var newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
+                    newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
                     return this._mocker(newSchema, wholeSchema);
                 } else { // if reference to json file in the node working directory folder
-
                     // relative path to json file
-                    var relFilePath = ref.substring(0, ref.search('#')); 
-                    // absoulute path to json file
+                    var relFilePath = ref.substring(0, ref.search('#'));
+                    // absolute path to json file
                     var absFilePath = process.env.PWD + '/' + relFilePath;
                     // property path to follow
                     var propPath = ref.substr(ref.search('#'), ref.length).split('/');
                     propPath.shift();
-
-                    console.log('filePath: ', absFilePath);
-                    console.log('propPath: ', propPath);
-
                     try {
                         var data = fs.readFileSync(absFilePath, 'utf8');
                         var obj = JSON.parse(data);
@@ -44,7 +40,7 @@ var SchemaMocker = function () {
                         _.each(propPath, function (p) {
                             externalSchema = externalSchema[p];
                         });
-                        var newSchema = _.merge(externalSchema, _.omit(schema, '$ref'));
+                        newSchema = _.merge(_.clone(externalSchema, true), _.omit(schema, '$ref'));
                         return this._mocker(newSchema, wholeSchema);
                     } catch (err) {
                         console.error(err);
