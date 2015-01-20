@@ -173,6 +173,10 @@ Part of the schema.js code is based in [json-schema-mock].
 
 
 #### History Log
+
+##### 0.1.11
+- JSON schema now supports references to external files.
+
 ##### 0.1.10
 - Allows upper case in the format name definition. Fixes [#1](https://github.com/RePoChO/raml-mocker/issues/1)
 
