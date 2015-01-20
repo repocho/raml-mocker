@@ -97,7 +97,7 @@ Json-Schema Support Draft-04
 ---
 **References**
 
-For the moment this plugin only support internal references, for example, this should be valid:
+This plugin supports internal references and also references to json files under the working folder of the node process running raml-mocker. For example:
 ```json
 {
     "$schema": "http://json-schema.org/schema",
@@ -114,6 +114,32 @@ For the moment this plugin only support internal references, for example, this s
             "type": "number"
         }
     }
+}
+```
+```json
+// schemas/thisSchema.json
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "test": {
+            "format": "timestamp",
+            "$ref": "schemas/otherSchema.json#"
+        }
+    },
+    "required": ["test"],
+}
+
+// schemas/otherSchema.json
+{
+    "$schema": "http://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "test": {
+            "format": "timestamp",
+            "type": "integer"
+        }
+    },
 }
 ```
 
@@ -146,6 +172,10 @@ Part of the schema.js code is based in [json-schema-mock].
 
 
 #### History Log
+
+##### 0.1.11
+- JSON schema now supports references to external files.
+
 ##### 0.1.10
 - Allows upper case in the format name definition. Fixes [#1](https://github.com/RePoChO/raml-mocker/issues/1)
 
