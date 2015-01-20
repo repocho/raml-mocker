@@ -12,6 +12,8 @@ ramlMocker.generate({
 }, function (methods) {
     console.log(methods);
     _.each(methods, function (m) {
-        console.log(m.mock());
+        console.log(m.mock(function(reqDefinition, response){
+            return reqDefinition.example ? reqDefinition.example : response;
+        }));
     });
 });

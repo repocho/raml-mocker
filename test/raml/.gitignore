@@ -1,0 +1,14 @@
+**/target/
+**/node_modules/
+launchpad-jetty/backbase/data/
+launchpad-jetty/webapps/demo-services.war
+launchpad-jetty/webapps/portalserver.war
+launchpad-jetty/work/
+*.swp
+*.swo
+*~
+launchpad-bundles/launchpad-theme/themes/**/css/*
+launchpad-bundles/node
+launchpad-bundles/launchpad-theme/node
+launchpad-jetty/activemq/
+launchpad-jetty/webapps/distributed-services-web.war
