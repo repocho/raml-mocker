@@ -125,14 +125,18 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 
             var currentMockDefaultCode = null;
             _.each(responsesMethodByCode, function (reqDefinition) {
-                methodMocker.addResponse(reqDefinition.code, function (fn) {
-                    var response = reqDefinition.schema ?
-                        schemaMocker(reqDefinition.schema, formats) : null;
-
-                    return _.isFunction(fn) ? fn(reqDefinition, response) : response;
+                methodMocker.addResponse(reqDefinition.code, function () {
+                    if (reqDefinition.schema) {
+                        return schemaMocker(reqDefinition.schema, formats);
+                    } else {
+                        return null;
+                    }
+                }, function () {
+                    return reqDefinition.example;
                 });
                 if ((!currentMockDefaultCode || currentMockDefaultCode > reqDefinition.code) && /^2\d\d$/.test(reqDefinition.code)) {
                     methodMocker.mock = methodMocker.getResponses()[reqDefinition.code];
+                    methodMocker.example = methodMocker.getExamples()[reqDefinition.code];
                     currentMockDefaultCode = reqDefinition.code;
                 }
             });
@@ -148,17 +152,22 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 function getResponsesByCode(responses) {
     var responsesByCode = [];
     _.each(responses, function (response, code) {
-        var body = response.body && response.body['application/json'];
+        var body = response.body;
         var schema = null;
         var example = null;
         if (!_.isNaN(Number(code))) {
             code = Number(code);
-            if (body) {
-                example = body.example;
-                try {
-                    schema = body.schema && JSON.parse(body.schema);
-                } catch (exception) {
-                    console.log(exception.stack);
+            if (body && response.body['application/json']) {
+                body = response.body['application/json'];
+                if (body.example) {
+                    example = body.example;
+                }
+                if (body.schema) {
+                    try {
+                        schema = JSON.parse(body.schema);
+                    } catch (exception) {
+                        console.log(exception.stack);
+                    }
                 }
             }
             responsesByCode.push({
