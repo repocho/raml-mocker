@@ -1,0 +1,27 @@
+{
+  "foo": {
+    "bar": {
+      "attr": "val",
+      "properties": [{
+          "property": {
+            "name": "name",
+            "label": "label",
+            "value": {
+              "type": "string",
+              "@text": "Example"
+            }
+          }
+        },{
+          "property": {
+            "name": "type",
+            "label": "label",
+            "value": {
+              "type": "string",
+              "@text": "json"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

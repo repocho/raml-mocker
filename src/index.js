@@ -131,9 +131,12 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
                     } else {
                         return null;
                     }
+                }, function () {
+                    return reqDefinition.example;
                 });
                 if ((!currentMockDefaultCode || currentMockDefaultCode > reqDefinition.code) && /^2\d\d$/.test(reqDefinition.code)) {
                     methodMocker.mock = methodMocker.getResponses()[reqDefinition.code];
+                    methodMocker.example = methodMocker.getExamples()[reqDefinition.code];
                     currentMockDefaultCode = reqDefinition.code;
                 }
             });
@@ -149,26 +152,22 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 function getResponsesByCode(responses) {
     var responsesByCode = [];
     _.each(responses, function (response, code) {
-        if (!_.isNaN(Number(code))) {
+        var body = response.body && response.body['application/json'];
+        var schema = null;
+        var example = null;
+        if (!_.isNaN(Number(code)) && body) {
             code = Number(code);
-            if (response.body && response.body['application/json'] && response.body['application/json'].schema) {
-                try {
-                    var schema = JSON.parse(response.body['application/json'].schema);
-                    if (schema) {
-                        responsesByCode.push({
-                            code: code,
-                            schema: schema
-                        });
-                    }
-                } catch (exception) {
-                    console.log(exception.stack);
-                }
-            } else {
-                responsesByCode.push({
-                    code: code,
-                    schema: null
-                });
+            example = body.example;
+            try {
+                schema = body.schema && JSON.parse(body.schema);
+            } catch (exception) {
+                console.log(exception.stack);
             }
+            responsesByCode.push({
+                code: code,
+                schema: schema,
+                example: example
+            });
         }
     });
     return responsesByCode;

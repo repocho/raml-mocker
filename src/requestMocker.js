@@ -4,6 +4,7 @@ var RequestMocker = function (uri, method) {
     this.uri = uri;
     this.method = method;
     this.responses = {};
+    this.examples = {};
 };
 RequestMocker.prototype = _.extend(RequestMocker.prototype, {
     mockByCode: function (code) {
@@ -13,11 +14,22 @@ RequestMocker.prototype = _.extend(RequestMocker.prototype, {
             throw 'Code not defined in responses';
         }
     },
+    exampleByCode: function (code) {
+        if (!_.isUndefined(this.examples[code])) {
+            return this.examples[code]();
+        } else {
+            throw 'Code not defined in examples';
+        }
+    },
     getResponses: function () {
         return this.responses;
     },
-    addResponse: function (code, fun) {
-        this.responses[code] = fun;
+    getExamples: function () {
+        return this.examples;
+    },
+    addResponse: function (code, responseFunction, exampleFunction) {
+        this.responses[code] = responseFunction;
+        this.examples[code] = exampleFunction;
     }
 });
 

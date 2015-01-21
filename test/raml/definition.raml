@@ -21,4 +21,13 @@ schemas:
           201:
             body:
               schema: objectDef
+    /example.json:
+      get:
+        description: |
+          Render JSON example
+        responses:
+          200:
+            body:
+              application/json:
+                example: !include examples/example.json
 
