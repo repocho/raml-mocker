@@ -152,23 +152,16 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 function getResponsesByCode(responses) {
     var responsesByCode = [];
     _.each(responses, function (response, code) {
-        var body = response.body;
+        var body = response.body && response.body['application/json'];
         var schema = null;
         var example = null;
-        if (!_.isNaN(Number(code))) {
+        if (!_.isNaN(Number(code)) && body) {
             code = Number(code);
-            if (body && response.body['application/json']) {
-                body = response.body['application/json'];
-                if (body.example) {
-                    example = body.example;
-                }
-                if (body.schema) {
-                    try {
-                        schema = JSON.parse(body.schema);
-                    } catch (exception) {
-                        console.log(exception.stack);
-                    }
-                }
+            example = body.example;
+            try {
+                schema = body.schema && JSON.parse(body.schema);
+            } catch (exception) {
+                console.log(exception.stack);
             }
             responsesByCode.push({
                 code: code,
