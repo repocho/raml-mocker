@@ -75,6 +75,10 @@ This generated request will return an array of objects like this:
           * Just use instead of mock(); -> mockByCode(418);
           */
         mockByCode: [Function](code)
+        /** Function by default to return the example (codes 2XX defined in the RAML). */
+        example: [Function]
+        /** The same as mockByCode but applied to examples */
+        exampleByCode: [Function](code)
     }
 ]
 ```
@@ -175,6 +179,7 @@ Part of the schema.js code is based in [json-schema-mock].
 
 ##### 0.1.11
 - JSON schema now supports references to external files.
+- Adds the possibility to get also the responses examples defined inside RAML files.
 
 ##### 0.1.10
 - Allows upper case in the format name definition. Fixes [#1](https://github.com/RePoChO/raml-mocker/issues/1)
