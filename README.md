@@ -156,12 +156,12 @@ This plugin supports internal references and also references to json files under
 * oneOf: **✓ yes**
 * not: **NO** (very difficult to generate a random mock from **not** json-schemas)
 
-If you need a example please check [the test schema]
+If you need an example please check [the test schema]
 
 
 TODO
 ---
-If you have an improvement please open an issue. If you want to colaborate do not hesitate to request it or do a fork + pull requests. I'll be gratefully.
+If you have any improvement please open an issue. If you want to collaborate do not hesitate to request it or do a fork + pull requests. I'll be grateful.
 
 Part of the schema.js code is based in [json-schema-mock].
 
