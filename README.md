@@ -177,6 +177,9 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
+##### 0.1.12
+- Fixes null responses crash in getResponsesByCode
+
 ##### 0.1.11
 - JSON schema now supports references to external files.
 - Adds the possibility to get also the responses examples defined inside RAML files.
