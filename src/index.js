@@ -152,6 +152,7 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 function getResponsesByCode(responses) {
     var responsesByCode = [];
     _.each(responses, function (response, code) {
+        if (!response) return;
         var body = response.body && response.body['application/json'];
         var schema = null;
         var example = null;
