@@ -17,8 +17,9 @@ GETTING STARTED
 ---
   - Yo need to define a RAML file like this: [definition.raml]
   - Import the json-schema file or define it inside the raml file.
-  -
+  - It's better if the RAML is validated by [ramlev][].
 
+[ramlev]: https://github.com/cybertk/ramlev.git
 
 HOW TO USE RAML MOCKER
 ---
