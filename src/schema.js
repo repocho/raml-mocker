@@ -3,6 +3,8 @@ var _ = require('lodash');
 var fs = require('fs');
 var Faker = require('faker');
 var FormatMocker = require('./format');
+var urllibSync = require('urllib-sync');
+var schemaCache = {};
 
 var DataMocker = function (schema, formats) {
     var formatMocker = new FormatMocker(formats);
@@ -25,16 +27,23 @@ var SchemaMocker = function () {
                     });
                     newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
                     return this._mocker(newSchema, wholeSchema);
-                } else { // if reference to json file in the node working directory folder
+                } else { 
                     // relative path to json file
                     var relFilePath = ref.substring(0, ref.search('#'));
-                    // absolute path to json file
-                    var absFilePath = process.env.PWD + '/' + relFilePath;
+        
+                    var data = "";
+                    if (wholeSchema.id) {
+                        //Parent schema has identity, use that as base path and fetch from web.
+                        data = this._fetchSchemaViaHttp(wholeSchema.id, relFilePath);
+                    } else {
+                        //if reference to json file in the node working directory folder
+                        data = this._fetchSchemaViaFile(process.env.PWD, relFilePath);
+                    }
+                    
                     // property path to follow
                     var propPath = ref.substr(ref.search('#'), ref.length).split('/');
                     propPath.shift();
                     try {
-                        var data = fs.readFileSync(absFilePath, 'utf8');
                         var obj = JSON.parse(data);
                         var externalSchema = obj;
                         _.each(propPath, function (p) {
@@ -68,6 +77,27 @@ var SchemaMocker = function () {
             } else {
                 return undefined;
             }
+        },
+        _fetchSchemaViaHttp: function (identityUri, relFilePath) {
+            var request = urllibSync.request;
+            var identityPath = identityUri.split('/');
+            identityPath.pop();
+            var refBasePath = identityPath.join('/');
+            var fullPath = refBasePath + '/' + relFilePath;
+            if (fullPath in schemaCache) {
+                return schemaCache[fullPath];
+            } else {
+                var response = request(fullPath);            
+                if (response.status == 200) {
+                    schemaCache[fullPath] = response.data;
+                }
+                return response.data;
+            }
+        },
+        _fetchSchemaViaFile: function (basePath, relFilePath) {
+            var absFilePath = refBasePath + '/' + relFilePath;            
+            var data = fs.readFileSync(absFilePath, 'utf8');
+            return data;
         },
         _mockSubSchema: function (schema, wholeSchema) {
             if (schema.allOf || schema.anyOf || schema.oneOf) {
