@@ -154,6 +154,9 @@ function getResponsesByCode(responses) {
     _.each(responses, function (response, code) {
         if (!response) return;
         var body = response.body && response.body['application/json'];
+        if (response.body && response.body['application/hal+json']) {
+            body = response.body['application/hal+json'];
+        }
         var schema = null;
         var example = null;
         if (!_.isNaN(Number(code)) && body) {

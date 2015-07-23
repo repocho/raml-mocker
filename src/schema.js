@@ -55,10 +55,11 @@ var SchemaMocker = function () {
                 var formatRet = this.formatMocker.format(format, schema);
                 return formatRet;
             } else if (schema.type) {
-                var type = schema.type.toLowerCase();
+                var type = schema.type;
                 if (_.isArray(type)) {
-                    type = type[0].toLowerCase();
+                    type = type[0];
                 }
+                type = type.toLowerCase();
                 if (typeof (this[type + 'Mocker']) !== 'undefined') {
                     var ret = this[type + 'Mocker'](schema, wholeSchema);
                     return ret;
