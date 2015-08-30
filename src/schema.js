@@ -157,7 +157,7 @@ var SchemaMocker = function () {
             var minLength = schema.minLength || 1;
             var maxLength = schema.maxLength || (minLength < 50 ? 50 : schema.minLength);
             var strLen = _.random(minLength, maxLength);
-            ret = Faker.Lorem.words(strLen).join(' ').substring(0, strLen).trim();
+            ret = Faker.lorem.words(strLen).join(' ').substring(0, strLen).trim();
             return ret;
         },
 

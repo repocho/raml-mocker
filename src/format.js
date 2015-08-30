@@ -29,7 +29,7 @@ var defaultFormats = {
         return new Date(Faker.Date.recent(20)).getTime();
     },
     'url': function (Faker) {
-        return Faker.Image.imageUrl();
+        return Faker.image.imageUrl();
     }
 };
 
