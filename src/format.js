@@ -40,9 +40,6 @@ var defaultFormats = {
     'avatar': function (faker) {
         return faker.image.avatar();
     }
-    'avatar': function (faker) {
-        return faker.image.avatar();
-    }
 
 
 };
