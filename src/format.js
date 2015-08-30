@@ -5,7 +5,7 @@ var faker = require('faker');
 var defaultFormats = {
     'id': function (faker, schema) {
         if (schema.type && schema.type.toLowerCase() === 'string') {
-            return faker.Lorem.words(5).join('');
+            return faker.lorem.words(5).join('');
         } else {
             return faker.random.number(999999999);
         }
@@ -20,17 +20,31 @@ var defaultFormats = {
         return faker.internet.ip();
     },
     'uri': function (faker) {
-        return faker.random.avatar_uri();
+        return faker.internet.url();
     },
     'date': function (faker) {
-        return faker.Date.recent();
+        return faker.date.recent();
     },
     'timestamp': function (faker) {
-        return new Date(faker.Date.recent(20)).getTime();
+        return new Date(faker.date.recent(20)).getTime();
     },
     'url': function (faker) {
         return faker.image.imageUrl();
+    },
+    'uuid': function (faker) {
+        return faker.random.uuid();
+    },
+    'number': function (faker) {
+        return faker.random.number();
+    },
+    'avatar': function (faker) {
+        return faker.image.avatar();
     }
+    'avatar': function (faker) {
+        return faker.image.avatar();
+    }
+
+
 };
 
 var FormatMocker = function (formats) {
