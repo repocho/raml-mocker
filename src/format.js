@@ -1,36 +1,47 @@
 'use strict';
 var _ = require('lodash');
-var Faker = require('faker');
+var faker = require('faker');
 
 var defaultFormats = {
-    'id': function (Faker, schema) {
+    'id': function (faker, schema) {
         if (schema.type && schema.type.toLowerCase() === 'string') {
-            return Faker.Lorem.words(5).join('');
+            return faker.lorem.words(5).join('');
         } else {
-            return Faker.random.number(999999999);
+            return faker.random.number(999999999);
         }
     },
-    'email': function (Faker) {
-        return Faker.Internet.email();
+    'email': function (faker) {
+        return faker.internet.email();
     },
-    'hostname': function (Faker) {
-        return Faker.Internet.domainName();
+    'hostname': function (faker) {
+        return faker.internet.domainName();
     },
-    'ipv4': function (Faker) {
-        return Faker.Internet.ip();
+    'ipv4': function (faker) {
+        return faker.internet.ip();
     },
-    'uri': function (Faker) {
-        return Faker.random.avatar_uri();
+    'uri': function (faker) {
+        return faker.internet.url();
     },
-    'date': function (Faker) {
-        return Faker.Date.recent();
+    'date': function (faker) {
+        return faker.date.recent();
     },
-    'timestamp': function (Faker) {
-        return new Date(Faker.Date.recent(20)).getTime();
+    'timestamp': function (faker) {
+        return new Date(faker.date.recent(20)).getTime();
     },
-    'url': function (Faker) {
-        return Faker.Image.imageUrl();
+    'url': function (faker) {
+        return faker.image.imageUrl();
+    },
+    'uuid': function (faker) {
+        return faker.random.uuid();
+    },
+    'number': function (faker) {
+        return faker.random.number();
+    },
+    'avatar': function (faker) {
+        return faker.image.avatar();
     }
+
+
 };
 
 var FormatMocker = function (formats) {
@@ -42,9 +53,9 @@ var FormatMocker = function (formats) {
         format: function (format, schema) {
             var result;
             if (typeof (formats[format]) === 'function') {
-                result = formats[format](Faker, schema);
+                result = formats[format](faker, schema);
             } else if (typeof (formats[format.toLowerCase()]) === 'function') {
-                result = formats[format.toLowerCase()](Faker, schema);
+                result = formats[format.toLowerCase()](faker, schema);
             }
             return result;
         }
