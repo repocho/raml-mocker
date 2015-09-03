@@ -177,6 +177,9 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
+##### 0.1.14
+- Updates dependencies
+
 ##### 0.1.13
 - Fixes compatibility issues.
 
