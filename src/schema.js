@@ -211,8 +211,8 @@ var SchemaMocker = function () {
                 }
                 ret = schema.multipleOf * _.random(multipleMin, multipleMax, floating);
             } else {
-                var minimum = schema.minimum || -99999999999;
-                var maximum = schema.maximum || 99999999999;
+                var minimum = schema.minimum !== undefined ? schema.minimum : -99999999999;
+                var maximum = schema.maximum !== undefined ? schema.maximum : 99999999999;
                 var gap = maximum - minimum;
                 /**
                  *  - min: 0.000006
