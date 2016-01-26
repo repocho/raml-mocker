@@ -211,15 +211,14 @@ var SchemaMocker = function () {
                 }
                 ret = schema.multipleOf * _.random(multipleMin, multipleMax, floating);
             } else {
-                var minimum = schema.minimum || -99999999999;
-                var maximum = schema.maximum || 99999999999;
+                var minimum = _.isNumber(schema.minimum) ? schema.minimum : -99999999999;
+                var maximum = _.isNumber(schema.maximum) ? schema.maximum : 99999999999;
                 var gap = maximum - minimum;
                 /**
                  *  - min: 0.000006
                  *  - max: 0.000009
                  */
                 var minFloat = this._getMinFloat(minimum);
-                minFloat = minFloat;
                 if (minFloat < this._getMinFloat(maximum)) {
                     minFloat = this._getMinFloat(maximum);
                 }
