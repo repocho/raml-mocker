@@ -1,34 +1,34 @@
 #%RAML 0.8
 title: TEST_Definition
 version: v1
+baseUri: http://api.example.org/test
 mediaType: application/json
 schemas:
   - objectDef : !include schemas/objectDefinition.json
-/test:
-  /{id}:
-    /objectDef:
-      get:
-        description: |
-          This method gets the objectDef
-        responses:
-          200:
-            body:
-              schema: objectDef
-      post:
-        description: |
-          This method post to create a new objectDef returning a 201 code
-        responses:
-          201:
-            body:
-              schema: objectDef
-    /example.json:
-      get:
-        description: |
-          Render JSON example
-        responses:
-          200:
-            body:
-              application/json:
-                example: !include examples/example.json
-          204:
 
+/{id}:
+  /objectDef:
+    get:
+      description: |
+        This method gets the objectDef
+      responses:
+        200:
+          body:
+            schema: objectDef
+    post:
+      description: |
+        This method post to create a new objectDef returning a 201 code
+      responses:
+        201:
+          body:
+            schema: objectDef
+  /example.json:
+    get:
+      description: |
+        Render JSON example
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/example.json
+        204:
