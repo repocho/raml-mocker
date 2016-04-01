@@ -1,6 +1,7 @@
 'use strict';
 var path = require('path'),
     fs = require('fs'),
+    url = require('url'),
     async = require('async'),
     raml = require('raml-parser'),
     _ = require('lodash'),
@@ -179,8 +180,12 @@ function getResponsesByCode(responses) {
 
 function getRamlRequestsToMockResources(definition, uri, formats, callback) {
     var requestsToMock = [];
+    var baseUri = '';
+    if (definition.baseUri) {
+        baseUri = url.parse(definition.baseUri).pathname;
+    }
     async.each(definition.resources, function (def, cb) {
-        getRamlRequestsToMock(def, uri, formats, function (reqs) {
+        getRamlRequestsToMock(def, baseUri + uri, formats, function (reqs) {
             requestsToMock = _.union(requestsToMock, reqs);
             cb(null);
         });
