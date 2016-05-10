@@ -14,39 +14,7 @@ var DataMocker = function (schema, formats) {
 var SchemaMocker = function () {
     return {
         _mocker: function (schema, wholeSchema) {
-            if (schema.$ref) {
-                var ref = schema.$ref;
-                var newSchema;
-                if (/^#\//i.test(ref)) {
-                    var path = ref.replace(/^#\//i, '').split('/');
-                    var refSchema = wholeSchema;
-                    _.each(path, function (p) {
-                        refSchema = refSchema[p];
-                    });
-                    newSchema = _.merge(_.clone(refSchema, true), _.omit(schema, '$ref'));
-                    return this._mocker(newSchema, wholeSchema);
-                } else { // if reference to json file in the node working directory folder
-                    // relative path to json file
-                    var relFilePath = ref.substring(0, ref.search('#'));
-                    // absolute path to json file
-                    var absFilePath = process.env.PWD + '/' + relFilePath;
-                    // property path to follow
-                    var propPath = ref.substr(ref.search('#'), ref.length).split('/');
-                    propPath.shift();
-                    try {
-                        var data = fs.readFileSync(absFilePath, 'utf8');
-                        var obj = JSON.parse(data);
-                        var externalSchema = obj;
-                        _.each(propPath, function (p) {
-                            externalSchema = externalSchema[p];
-                        });
-                        newSchema = _.merge(_.clone(externalSchema, true), _.omit(schema, '$ref'));
-                        return this._mocker(newSchema, wholeSchema);
-                    } catch (err) {
-                        console.error(err);
-                    }
-                }
-            } else if (schema.enum && schema.enum.length > 0) {
+            if (schema.enum && schema.enum.length > 0) {
                 return schema.enum[_.random(0, schema.enum.length - 1)];
             } else if (schema.allOf || schema.anyOf || schema.oneOf || schema.not) {
                 return this._mockSubSchema(schema, wholeSchema);

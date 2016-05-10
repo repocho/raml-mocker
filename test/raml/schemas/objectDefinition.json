@@ -29,6 +29,9 @@
                         "format": "timestamp",
                         "$ref": "#/definitions/other"
                     },
+                    "test2": {
+                        "$ref": "../complexTypes/date.json"
+                    },
                     "anyOfTest": {
                         "type": "string",
                         "oneOf": [{

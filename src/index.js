@@ -63,7 +63,7 @@ function generateFromPath(filesPath, formats, callback) {
 function generateFromFiles(files, formats, callback) {
     var requestsToMock = [];
     async.each(files, function (file, cb) {
-        raml.loadFile(file).then(function (data) {
+        raml.loadFile(file, {dereferenceSchemas: true}).then(function (data) {
             getRamlRequestsToMock(data, '/', formats, function (reqs) {
                 requestsToMock = _.union(requestsToMock, reqs);
                 cb();
