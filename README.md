@@ -175,6 +175,9 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
+##### 0.2.2
+- Dependency resolution by `$ref` now is delegated to `raml-parser`
+
 ##### 0.2.1
 - Adding baseUri to resource paths.
 - Accepting all media types stated in RAML 0.8 spec
