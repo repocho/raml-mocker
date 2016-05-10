@@ -1,6 +1,6 @@
 {
     "name": "raml-mocker",
-    "version": "0.1.14",
+    "version": "0.2.1",
     "description": "Node module to create random responses to requests based on RAML rest definition and json-schema.",
     "main": "src/index.js",
     "directories": {
@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/RePoChO/raml-mocker.git"
+        "url": "https://github.com/repocho/raml-mocker.git"
     },
     "keywords": [
         "RAML",
@@ -29,9 +29,9 @@
     "author": "David Vega Fontelos",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/RePoChO/raml-mocker/issues"
+        "url": "https://github.com/repocho/raml-mocker/issues"
     },
-    "homepage": "https://github.com/RePoChO/raml-mocker",
+    "homepage": "https://github.com/repocho/raml-mocker",
     "dependencies": {
         "async": "2.0.0-rc.4",
         "faker": "^3.1.0",

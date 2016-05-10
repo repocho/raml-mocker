@@ -17,8 +17,6 @@ GETTING STARTED
 ---
   - Yo need to define a RAML file like this: [definition.raml]
   - Import the json-schema file or define it inside the raml file.
-  -
-
 
 HOW TO USE RAML MOCKER
 ---
@@ -177,9 +175,13 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
-##### 0.1.14
+##### 0.2.1
 - Adding baseUri to resource paths.
 - Accepting all media types stated in RAML 0.8 spec
+- Upgrades dependencies
+
+##### 0.2.0
+- Upgrades dependencies
 
 ##### 0.1.13
 - Fixes compatibility issues.
