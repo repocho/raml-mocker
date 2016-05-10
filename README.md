@@ -177,6 +177,10 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
+##### 0.1.14
+- Adding baseUri to resource paths.
+- Accepting all media types stated in RAML 0.8 spec
+
 ##### 0.1.13
 - Fixes compatibility issues.
 
