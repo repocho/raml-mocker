@@ -33,7 +33,7 @@
     },
     "homepage": "https://github.com/repocho/raml-mocker",
     "dependencies": {
-        "async": "2.0.0-rc.4",
+        "async": "latest",
         "faker": "^3.1.0",
         "lodash": "^4.12.0",
         "raml-parser": "git://github.com/repocho/raml-js-parser.git#features/dereferencing-support-with-circular-references"
