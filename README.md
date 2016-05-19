@@ -157,9 +157,9 @@ This plugin supports internal references and also references to json files under
 If you need an example please check [the test schema]
 
 
-TODO
+CONTRIBUTING
 ---
-If you have any improvement please open an issue. If you want to collaborate do not hesitate to request it or do a fork + pull requests. I'll be grateful.
+If you have any improvement please open an issue. If you want to collaborate do not hesitate to request it or do a fork + pull request. I'll be grateful.
 
 Part of the schema.js code is based in [json-schema-mock].
 
@@ -174,6 +174,9 @@ Part of the schema.js code is based in [json-schema-mock].
 
 
 #### History Log
+
+##### 0.2.3
+- Work-around to fix dependencies resolution with circular references
 
 ##### 0.2.2
 - Dependency resolution by `$ref` now is delegated to `raml-parser`
