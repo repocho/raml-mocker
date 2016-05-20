@@ -175,6 +175,9 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
+##### 0.2.4
+- The raml-js-parser is now a git+https dependency
+
 ##### 0.2.3
 - Work-around to fix dependencies resolution with circular references
 
