@@ -10,6 +10,7 @@ var path = require('path'),
 
 function generate(options, callback) {
     var formats = {};
+    var parserOptions = _.defaults(_.get(options, 'parserOptions'), {dereferenceSchemas: true});
     if (options) {
         if (options.formats) {
             formats = options.formats;
@@ -20,9 +21,9 @@ function generate(options, callback) {
         }
         try {
             if (options.path) {
-                generateFromPath(options.path, formats, callback);
+                generateFromPath(options.path, parserOptions, formats, callback);
             } else if (options.files && _.isArray(options.files)) {
-                generateFromFiles(options.files, formats, callback);
+                generateFromFiles(options.files, parserOptions, formats, callback);
             }
         } catch (exception) {
             console.error('[RAML-MOCKER] A runtime error has ocurred:\n');
@@ -45,7 +46,7 @@ function showUsage() {
     console.log('--------------------------------------------------------------------');
 }
 
-function generateFromPath(filesPath, formats, callback) {
+function generateFromPath(filesPath, parserOptions, formats, callback) {
     fs.readdir(filesPath, function (err, files) {
         if (err) {
             throw err;
@@ -56,14 +57,14 @@ function generateFromPath(filesPath, formats, callback) {
                 filesToGenerate.push(path.join(filesPath, file));
             }
         });
-        generateFromFiles(filesToGenerate, formats, callback);
+        generateFromFiles(filesToGenerate, parserOptions, formats, callback);
     });
 }
 
-function generateFromFiles(files, formats, callback) {
+function generateFromFiles(files, parserOptions, formats, callback) {
     var requestsToMock = [];
     async.each(files, function (file, cb) {
-        raml.loadFile(file, {dereferenceSchemas: true}).then(function (data) {
+        raml.loadFile(file, parserOptions).then(function (data) {
             getRamlRequestsToMock(data, '/', formats, function (reqs) {
                 requestsToMock = _.union(requestsToMock, reqs);
                 cb();
