@@ -36,7 +36,7 @@ var schema = {
 
 var formats = {
     foo: function foo(Faker, schema) {
-        return Faker.Name.firstName();
+        return Faker.name.firstName();
     },
     Bar: function foo(Faker, schema) {
         return 'BAR';
