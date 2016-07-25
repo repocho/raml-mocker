@@ -51,6 +51,9 @@ var options = {
         foo: function foo(Faker, schema) {
             return Faker.Name.firstName();
         }
+    },
+    parserOptions: {
+      dereferenceSchemas: true
     }
 };
 ```
