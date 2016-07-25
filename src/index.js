@@ -186,9 +186,33 @@ function getResponsesByCode(responses) {
 function getRamlRequestsToMockResources(definition, uri, formats, callback) {
     var requestsToMock = [];
     var baseUri = '';
-    if (definition.baseUri) {
+
+    if (definition.baseUri && definition.baseUriParameters) {
+      // extra the variables from the baseUri
+      var uriElems = definition.baseUri.match(/{[a-zA-Z]+}/g);
+
+      // get the default variable value from the baseUriParameters
+      var tempBaseUri = definition.baseUri;
+      uriElems.map(function (elem) { // e.g. elem == '{host}'
+        var strippedElem = elem.replace("{","").replace("}","");
+        var elemValue = definition.baseUriParameters[strippedElem].default;
+        if (!elemValue) {
+          // if not available, look into definition for a value
+          elemValue = definition[strippedElem];
+        }
+        if (elemValue) {
+          tempBaseUri = tempBaseUri.replace( new RegExp(elem, 'g'), elemValue);
+        } else {
+          console.log("No value found for "+elem);
+        }
+      });
+      baseUri = url.parse(tempBaseUri).pathname;
+    }
+
+    if (definition.baseUri && !definition.baseUriParameters) {
         baseUri = url.parse(definition.baseUri).pathname;
     }
+    
     async.each(definition.resources, function (def, cb) {
         getRamlRequestsToMock(def, baseUri + uri, formats, function (reqs) {
             requestsToMock = _.union(requestsToMock, reqs);

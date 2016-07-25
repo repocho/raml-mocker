@@ -1,0 +1,23 @@
+#%RAML 0.8
+title: TEST_Definition
+version: v1
+baseUri: http://{host}:{hostport}/api/{version}/
+baseUriParameters:
+  host:
+    default: localhost
+  hostport:
+    default: 8080
+
+mediaType: application/json
+
+/baseUri:
+  /example.json:
+    get:
+      description: |
+        Render JSON example
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/example.json
+        204:
