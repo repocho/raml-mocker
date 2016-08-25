@@ -1,6 +1,6 @@
 {
     "name": "raml-mocker",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "Node module to create random responses to requests based on RAML rest definition and json-schema.",
     "main": "src/index.js",
     "directories": {
@@ -35,7 +35,7 @@
     "dependencies": {
         "async": "latest",
         "faker": "^3.1.0",
-        "lodash": "^4.12.0",
+        "lodash": "^4.15.0",
         "raml-parser": "latest"
     }
 }
