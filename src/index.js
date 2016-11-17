@@ -69,7 +69,7 @@ function generateFromFiles(files, parserOptions, formats, callback) {
                 requestsToMock = _.union(requestsToMock, reqs);
                 cb();
             });
-        }, function (error) {
+        }).catch(function (error) {
             cb('Error parsing: ' + error);
         });
     }, function (err) {
