@@ -120,7 +120,7 @@ function getRamlRequestsToMock(definition, uri, formats, callback) {
 function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
     var responsesByCode = [];
     _.each(definition.methods, function (method) {
-        if (method.method && /get|post|put|delete/i.test(method.method) && method.responses) {
+        if (method.method && /get|post|put|patch|delete/i.test(method.method) && method.responses) {
             var responsesMethodByCode = getResponsesByCode(method.responses);
 
             var methodMocker = new RequestMocker(uri, method.method);
