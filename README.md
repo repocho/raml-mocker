@@ -178,9 +178,13 @@ Part of the schema.js code is based in [json-schema-mock].
 
 #### History Log
 
+##### 0.2.7
+- Adds support for PATCH request
+- Fixes an issue when parsing raml files
+
 ##### 0.2.6
 - Adds parserOptions (e.g. dereferenceSchemas by default is true)
-- Adds support for baseUriParameters.
+- Adds support for baseUriParameters
 
 ##### 0.2.5
 - Updates raml-js-parser dependency to the new version
