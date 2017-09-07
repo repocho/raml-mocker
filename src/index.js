@@ -183,7 +183,6 @@ function getResponsesByCode(responses) {
             });
         }
     });
-    console.log('responsesByCodeList: ', responsesByCodeList);
     return responsesByCodeList;
 }
 
