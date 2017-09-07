@@ -152,14 +152,17 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
 }
 
 function getResponsesByCode(responses) {
-    var responsesByCode = [];
+    // gather responses by status codes in list
+    var responsesByCodeList = [];
     _.each(responses, function (response, code) {
+        var responsesByCode = [];
         if (!response) return;
-        var body = response.body && response.body['application/json'];
+        var body = response.body;
         // it validates any possible media vendor type
         for (var key in response.body) {
-            if (response.body.hasOwnProperty(key) && key.match(/application\/[A-Za-z.-0-1]*\+?(json|xml)/)) {
-                body = response.body[key];
+            if (response.body.hasOwnProperty(key) && (key.match(/^\w+[/]\w+$/))) {
+                body = response.body;
+                responsesByCode.push(body);
                 break;
             }
         }
@@ -173,14 +176,15 @@ function getResponsesByCode(responses) {
             } catch (exception) {
                 console.log(exception.stack);
             }
-            responsesByCode.push({
+            responsesByCodeList.push({
                 code: code,
                 schema: schema,
-                example: example
+                example: responsesByCode
             });
         }
     });
-    return responsesByCode;
+    console.log('responsesByCodeList: ', responsesByCodeList);
+    return responsesByCodeList;
 }
 
 function getRamlRequestsToMockResources(definition, uri, formats, callback) {
