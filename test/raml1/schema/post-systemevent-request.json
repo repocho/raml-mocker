@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "name": "System Event",
+  "description": "System Event resource",
+  "type": "object",
+  "properties": {
+    "category": {
+      "description" : "The categorization for the system event, example: 'BackendProcess', 'CleanupProcedure' etc.",
+      "type": "string"
+    },
+    "type": {
+      "description" : "The type of system event to be added, example: 'CUSTOMER' for customer initiated events, 'ImportProgram' for import processes etc.",
+      "type": "string"
+    },
+    "referenceId": {
+      "description" : "Reference to other systems of processes.",
+      "type": "string"
+    },
+    "severity": {
+      "description" : "Indicates the severity of the system event as information, one of 'INFO', 'WARNING', 'ERROR'.",
+      "type": "string"
+    },
+    "userId": {
+      "description" : "The type and id of the user that triggered the system event, format: '<userType>-<userId>', e.g. '1006-123'.",
+      "type": "string"
+    }
+  }
+}

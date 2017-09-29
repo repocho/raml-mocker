@@ -3,12 +3,7 @@ var _ = require('lodash');
 var ramlMocker = require('../src/index.js');
 ramlMocker.generate();
 ramlMocker.generate({
-    path: 'test/raml',
-    formats: {
-        Bar: function foo(Faker, schema) {
-            return 'BAR';
-        }
-    }
+    path: 'test/raml1'
 }, function (methods) {
     console.log(methods);
     _.each(methods, function (m) {

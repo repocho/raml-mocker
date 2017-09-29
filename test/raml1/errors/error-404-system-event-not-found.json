@@ -1,0 +1,5 @@
+{
+  "status": 404,
+  "errorId": "SYSTEMEVENT_NOT_FOUND",
+  "description": "System event not found with systemEventId=<systemEventId>"
+}

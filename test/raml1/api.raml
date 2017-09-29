@@ -1,0 +1,150 @@
+#%RAML 1.0
+title: Process API
+version: v1
+protocols: [HTTPS]
+baseUri: https://{domain}/api/process/rest/{version}
+mediaType: application/json
+annotationTypes: 
+  deprecated: string
+baseUriParameters: 
+  domain:
+    description: The domain that hosts this API.
+    example: ssa2.betware.com
+securitySchemes:
+  oauth_2_0:
+      description: |
+          This API supports OAuth 2.0 for authenticating all API requests.
+      type: OAuth 2.0
+      describedBy:
+          headers:
+              Authorization:
+                  description: |
+                     Used to send a valid OAuth 2 Bearer access token. This token is obtained by requesting the accessTokenUri supplying a Basic Authorization token that is supplied to you by the token provider through a secure channel.
+                  type: string
+          responses:
+             403:
+                description: |
+                      Bad or expired token. This can happen if the user or the token provider
+                      revoked or expired an access token. To fix this, you should request a new token through the accessTokenUri.
+      settings:
+        accessTokenUri: https://{domain}/api/access/oidc/token
+        authorizationGrants: [ client_credentials ]
+    
+traits:
+  getProcess404:
+      usage: Apply this to a method that can return 404 due to requested process was not found.
+      responses:
+        404:
+          description: Process not found
+          body:
+            error/process-not-found:
+              example: !include errors/error-404-process-not-found.json
+  err403:
+    usage: 403 error response
+    responses:
+      403:
+        description: Caller is not authenticated.
+        body: 
+          example: !include errors/error-403.json
+  err500:
+      usage: 500 error response
+      responses:
+        500:
+          description: The server encountered an error.
+          body:
+            application/json:
+              example: |
+                {
+                  "status": 500,
+                  "description": "Unexpected error"
+                }
+  secure:
+    securedBy: oauth_2_0
+/processes:
+  get:
+    is: [secure, err403, getProcess404, err500]
+    description: Returns information about the process matching the supplied query string parameters
+    queryParameters: 
+      processLabel:
+        displayName: processLabel
+        type: string
+        description: The label of the process to query
+        required: true
+        example: processLabel=winsel
+      name:
+        displayName: name
+        type: string
+        description: The name of the process to query
+        required: true
+        example: name=WinnerSelection
+    responses: 
+      200:
+        description: The requested process was found
+        body:
+          application/json:
+            example: !include examples/get-process-response.json
+            schema: !include schema/get-process-response.json
+/systemevents:
+  post:
+    is: [secure, err403, err500]
+    description: Adds a specific system event. A system event is an event produced by a single execution of a process and contains the result of the process execution.
+    body: 
+      application/json:
+        example: !include examples/post-systemevent-request.json
+        schema: !include schema/post-systemevent-request.json
+    responses:
+      200:
+        description: System event was successfully created. Returns unique identifier of the system event. 
+        body: 
+          application/json:
+            example: 200
+  get:
+    is: [secure, err403, err500]
+    description: Returns a list of system events matching the supplied query string parameters.
+    queryParameters: 
+      type:
+        displayName: type
+        description: The type of system events to query
+        type: string
+        required: true
+        example: type=ImportProgram
+      referenceId:
+        displayName: referenceId
+        description: The referenceId of system events to query
+        type: string
+        required: true
+        example: referenceId=123
+      fromDate:
+        displayName: fromDate
+        description: Query for system events created after this specified datetime value
+        type: datetime
+        required: true
+        example: 2017-03-17T10:38:25Z
+      toDate:
+        displayName: toDate
+        description: Query for system events created before this specified datetime value
+        type: datetime
+        required: true
+        example: 2017-03-27T10:38:25Z
+    responses: 
+      200:
+        description: Successful response. Note that the response migh be empty array in the case where no system events were found.
+        body: 
+          application/json:
+            example: !include examples/get-system-events-response.json
+/systemevents/{systemEventId}:
+  get:
+    is: [secure, err403, err500]
+    description: Returns the system event matching the supplied systemEventId path parameter.
+    responses: 
+      200:
+        description: System event found.
+        body: 
+          application/json:
+            schema: !include schema/get-system-event-response.json
+            example: !include examples/get-system-event-response.json
+      404:
+        description: The requested system event was not found
+        body:
+          application/json:
+            example: !include errors/error-404-system-event-not-found.json
