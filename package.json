@@ -36,6 +36,7 @@
         "async": "latest",
         "faker": "^3.1.0",
         "lodash": "^4.15.0",
-        "raml-parser": "latest"
+        "raml-1-parser": "latest",
+        "underscore": "^1.8.3"
     }
 }

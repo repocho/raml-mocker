@@ -64,8 +64,8 @@ function generateFromPath(filesPath, parserOptions, formats, callback) {
 function generateFromFiles(files, parserOptions, formats, callback) {
     var requestsToMock = [];
     async.each(files, function (file, cb) {
-        raml.loadFile(file, parserOptions).then(function (data) {
-            getRamlRequestsToMock(data, '/', formats, function (reqs) {
+        raml.loadApi(file, parserOptions).then(function (data) {
+            getRamlRequestsToMock(data.toJSON(), '/', formats, function (reqs) {
                 requestsToMock = _.union(requestsToMock, reqs);
                 cb();
             });
@@ -187,6 +187,7 @@ function getResponsesByCode(responses) {
 }
 
 function getRamlRequestsToMockResources(definition, uri, formats, callback) {
+    
     var requestsToMock = [];
     var baseUri = '';
 
@@ -194,15 +195,14 @@ function getRamlRequestsToMockResources(definition, uri, formats, callback) {
       // extra the variables from the baseUri
       var uriElems = definition.baseUri.match(/{[a-zA-Z]+}/g);
 
-      // get the default variable value from the baseUriParameters
       var tempBaseUri = definition.baseUri;
       uriElems.map(function (elem) { // e.g. elem == '{host}'
         var strippedElem = elem.replace("{","").replace("}","");
-        var elemValue = definition.baseUriParameters[strippedElem].default;
+        var elemValue = definition.baseUriParameters[strippedElem].default ? definition.baseUriParameters[strippedElem].default : definition.baseUriParameters[strippedElem].name;
+
         if (!elemValue) {
-          // if not available, look into definition for a value
-          elemValue = definition[strippedElem];
-        }
+              elemValue = definition[strippedElem];
+            }
         if (elemValue) {
           tempBaseUri = tempBaseUri.replace( new RegExp(elem, 'g'), elemValue);
         } else {
@@ -225,6 +225,7 @@ function getRamlRequestsToMockResources(definition, uri, formats, callback) {
         if (err) {
             console.log(err);
         }
+
         callback(requestsToMock);
     });
 }
