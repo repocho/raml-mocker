@@ -25,4 +25,4 @@ build/Release
 node_modules
 
 # mac os only backup file
-# package-lock.json
+package-lock.json
