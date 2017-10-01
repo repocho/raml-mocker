@@ -9,11 +9,14 @@ ramlMocker.generate({
     _.each(methods, function (m) {
         var mock = m.mock();
         if (mock) {
-            //console.log(mock);
+            console.log(mock);
         }
         var example = m.example();
         if (example) {
-            //console.log(example);
+            console.log(example);
         }
+        _.each(m.examples, function(item) {
+            console.log(item);
+        })
     });
 });

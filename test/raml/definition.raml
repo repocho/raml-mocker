@@ -32,3 +32,10 @@ schemas:
             application/json:
               example: !include examples/example.json
         204:
+          body:
+            ROLE1/TEST:
+              example:
+                { "1test204": "test1" }
+            ROLE2/TEST:
+              example:
+                { "2test204": "test2" }

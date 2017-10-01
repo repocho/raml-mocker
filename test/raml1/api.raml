@@ -146,5 +146,7 @@ traits:
       404:
         description: The requested system event was not found
         body:
-          application/json:
+          ROLE1/TEST:
             example: !include errors/error-404-system-event-not-found.json
+          ROLE2/TEST:
+            example: !include errors/error-404-process-not-found.json

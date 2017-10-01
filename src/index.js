@@ -124,7 +124,6 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             var responsesMethodByCode = getResponsesByCode(method.responses);
 
             var methodMocker = new RequestMocker(uri, method.method);
-
             var currentMockDefaultCode = null;
             _.each(responsesMethodByCode, function (reqDefinition) {
                 methodMocker.addResponse(reqDefinition.code, function () {
@@ -148,6 +147,7 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             responsesByCode.push(methodMocker);
         }
     });
+
     callback(responsesByCode);
 }
 
@@ -166,6 +166,7 @@ function getResponsesByCode(responses) {
                 break;
             }
         }
+
         var schema = null;
         var example = null;
         if (!_.isNaN(Number(code)) && body) {
@@ -183,6 +184,7 @@ function getResponsesByCode(responses) {
             });
         }
     });
+
     return responsesByCodeList;
 }
 
