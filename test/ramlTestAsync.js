@@ -1,10 +1,8 @@
 var ramlMocker = require('..');
 var options = {
-    path: 'test/raml1'
+    path: 'test/raml'
 };
 var callback = function (requests){
-    _.each(requests, function(item) {
-    	console.log(item);
-    })
+    console.log(requests);
 };
 ramlMocker.generate(options, callback);

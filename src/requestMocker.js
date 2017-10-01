@@ -27,9 +27,8 @@ RequestMocker.prototype = _.extend(RequestMocker.prototype, {
     getExamples: function () {
         return this.examples;
     },
-    addResponse: function (code, responseFunction, exampleFunction) {
-        this.responses[code] = responseFunction;
-        this.examples[code] = exampleFunction;
+    addResponse: function(code, exampleAndMockObj) {
+        this.responses[code] = exampleAndMockObj; 
     }
 });
 

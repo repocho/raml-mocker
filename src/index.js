@@ -126,20 +126,23 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             var methodMocker = new RequestMocker(uri, method.method);
             var currentMockDefaultCode = null;
             _.each(responsesMethodByCode, function (reqDefinition) {
-                methodMocker.addResponse(reqDefinition.code, function () {
-                    if (reqDefinition.schema) {
-                        return schemaMocker(reqDefinition.schema, formats);
-                    } else {
-                        return null;
+
+                var exampleAndMockObj = {};
+                // iterate through all possible roles, can be one or more per status code
+                _.each(reqDefinition.responseList, function(req) {
+                    function mockData(objKey) {
+                        if (req[objKey].schema) {
+                            return schemaMocker(req[objKey].schema, formats);
+                        }
                     }
-                }, function () {
-                    return reqDefinition.example;
-                });
-                if ((!currentMockDefaultCode || currentMockDefaultCode > reqDefinition.code) && /^2\d\d$/.test(reqDefinition.code)) {
-                    methodMocker.mock = methodMocker.getResponses()[reqDefinition.code];
-                    methodMocker.example = methodMocker.getExamples()[reqDefinition.code];
-                    currentMockDefaultCode = reqDefinition.code;
-                }
+
+                    exampleAndMockObj[Object.keys(req).toString()] = {
+                        example: req[Object.keys(req).toString()].example ? req[Object.keys(req).toString()].example : null,
+                        mock: mockData(Object.keys(req).toString())
+                    };
+                })
+
+                methodMocker.addResponse(reqDefinition.code, exampleAndMockObj);
             });
             if (currentMockDefaultCode) {
                 methodMocker.defaultCode = currentMockDefaultCode;
@@ -158,29 +161,30 @@ function getResponsesByCode(responses) {
         var responsesByCode = [];
         if (!response) return;
         var body = response.body;
-        // it validates any possible media vendor type
-        for (var key in response.body) {
-            if (response.body.hasOwnProperty(key) && (key.match(/^\w+[/]\w+$/))) {
-                body = response.body;
-                responsesByCode.push(body);
-                break;
-            }
-        }
 
-        var schema = null;
-        var example = null;
-        if (!_.isNaN(Number(code)) && body) {
-            code = Number(code);
-            example = body.example;
+        schema = null;
+        _.each(response.body, function(body) {
             try {
                 schema = body.schema && JSON.parse(body.schema);
-            } catch (exception) {
+            } catch(exception) {
                 console.log(exception.stack);
             }
+
+            // gather example and schema to list
+            responsesByCode.push({
+                [body.name]: {
+                    example: body.example ? body.example : null,
+                    schema: schema
+                }
+            });
+        });
+
+        if (!_.isNaN(Number(code)) && body) {
+            code = Number(code);
+            // append example and schema list to responseByCodeList 
             responsesByCodeList.push({
                 code: code,
-                schema: schema,
-                example: responsesByCode
+                responseList: responsesByCode
             });
         }
     });
@@ -194,7 +198,7 @@ function getRamlRequestsToMockResources(definition, uri, formats, callback) {
     var baseUri = '';
 
     if (definition.baseUri && definition.baseUriParameters) {
-      // extra the variables from the baseUri
+      // extract the variables from the baseUri
       var uriElems = definition.baseUri.match(/{[a-zA-Z]+}/g);
 
       var tempBaseUri = definition.baseUri;
