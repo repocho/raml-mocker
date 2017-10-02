@@ -167,7 +167,7 @@ function getResponsesByCode(responses) {
             try {
                 schema = body.schema && JSON.parse(body.schema);
             } catch(exception) {
-                console.log(exception.stack);
+                //console.log(exception.stack);
             }
 
             // gather example and schema to list
