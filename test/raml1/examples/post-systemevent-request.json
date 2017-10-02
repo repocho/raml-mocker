@@ -1,0 +1,8 @@
+{
+	"category": "BackendProcess",
+	"type": "ImportProgram",
+	"referenceId": "123",
+	"severity": "INFO",
+	"userId": "1006-1",
+  "description": "Successfully executed Winner Import with 0 errors and 0 warnings. Total imported winners: 1200"
+}

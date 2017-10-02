@@ -1,0 +1,40 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "title": "System Event",
+   "description": "System Event resource",
+   "type": "array",
+   "items": {
+     "type": "object",
+     "properties": {
+       "systemEventId":{
+         "description": "A unique numeric ID of the system event.",
+         "type": "string"
+       },
+       "category":{
+         "description": "The system event category, e.g. 'BackendProcess'.",
+         "type": "string"
+       },
+       "type":{
+         "description": "The system event type, e.g. 'ImportProgram'.",
+         "type": "string"
+       },
+       "refrenceId":{
+         "description": "The reference to other systems of processes.",
+         "type": "string"
+       },
+       "severity":{
+         "description": "The severity as informational result of the system event, one of 'INFO', 'WARNING', 'ERROR'.",
+         "type": "string"
+       },
+       "description":{
+         "description": "Describes the result of the system event.",
+         "type": "string"
+       },
+       "created":{
+         "description": "The datetime when the system event was registered.",
+         "type": "string",
+         "format": "date-time"
+       }
+     }
+   }    
+}

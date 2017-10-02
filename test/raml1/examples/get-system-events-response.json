@@ -1,0 +1,22 @@
+[
+  {
+    "systemEventId": "1234",
+    "created": "2017-03-17T10:38:25Z",
+    "category": "BackendProcess",
+    "type": "ImportProgram",
+    "referenceId": "123",
+    "severity": "INFO",
+    "userId": "1006-1",
+    "description": "Successfully executed Winner Import with 0 errors and 0 warnings. Total imported winners: 1200"
+  },
+  {
+    "systemEventId": "1235",
+    "created": "2017-03-17T11:31:15Z",
+    "category": "BackendProcess",
+    "type": "ImportProgram",
+    "referenceId": "123",
+    "severity": "INFO",
+    "userId": "1006-1",
+    "description": "Successfully executed Winner Import with 0 errors and 0 warnings. Total imported winners: 300"
+  }
+]
