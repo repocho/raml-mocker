@@ -162,8 +162,8 @@ function getResponsesByCode(responses) {
         if (!response) return;
         var body = response.body;
 
-        schema = null;
         _.each(response.body, function(body) {
+            var schema = null;
             try {
                 schema = body.schema && JSON.parse(body.schema);
             } catch(exception) {
@@ -193,7 +193,6 @@ function getResponsesByCode(responses) {
 }
 
 function getRamlRequestsToMockResources(definition, uri, formats, callback) {
-    
     var requestsToMock = [];
     var baseUri = '';
 
