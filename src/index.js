@@ -3,10 +3,14 @@ var path = require('path'),
     fs = require('fs'),
     url = require('url'),
     async = require('async'),
-    raml = require('raml-parser'),
+    raml = require('raml-1-parser'),
     _ = require('lodash'),
-    schemaMocker = require('./schema.js'),
     RequestMocker = require('./requestMocker.js');
+
+const jsf = require('json-schema-faker');
+const refParser = require('json-schema-ref-parser');
+
+let TYPES;
 
 function generate(options, callback) {
     var formats = {};
@@ -64,8 +68,8 @@ function generateFromPath(filesPath, parserOptions, formats, callback) {
 function generateFromFiles(files, parserOptions, formats, callback) {
     var requestsToMock = [];
     async.each(files, function (file, cb) {
-        raml.loadFile(file, parserOptions).then(function (data) {
-            getRamlRequestsToMock(data, '/', formats, function (reqs) {
+        raml.loadApi(file, parserOptions).then(function (data) {
+            getRamlRequestsToMock(data.toJSON(), '/', formats, function (reqs) {
                 requestsToMock = _.union(requestsToMock, reqs);
                 cb();
             });
@@ -82,6 +86,9 @@ function generateFromFiles(files, parserOptions, formats, callback) {
 }
 
 function getRamlRequestsToMock(definition, uri, formats, callback) {
+  if (/^\/$/.test(uri)) {
+    TYPES = definition.types;
+  }
     var requestsToMock = [];
     if (definition.relativeUri) {
         var nodeURI = definition.relativeUri;
@@ -129,7 +136,9 @@ function getRamlRequestsToMockMethods(definition, uri, formats, callback) {
             _.each(responsesMethodByCode, function (reqDefinition) {
                 methodMocker.addResponse(reqDefinition.code, function () {
                     if (reqDefinition.schema) {
-                        return schemaMocker(reqDefinition.schema, formats);
+                      return refParser.dereference(reqDefinition.schema)
+                        // TODO: support custom formats via js
+                        .then(schema => jsf(schema));
                     } else {
                         return null;
                     }
@@ -168,9 +177,19 @@ function getResponsesByCode(responses) {
         if (!_.isNaN(Number(code)) && body) {
             code = Number(code);
             example = body.example;
+
+            if (body.type && !body.schema) {
+              const type = TYPES
+                .filter(t => t.hasOwnProperty(body.type))
+                .map(t => t[body.type])
+                .reduce(i => i);
+              body.schema = type.schema
+            }
+
             try {
                 schema = body.schema && JSON.parse(body.schema);
             } catch (exception) {
+                console.log('Error parsing json schema:', body.schema)
                 console.log(exception.stack);
             }
             responsesByCode.push({
